@@ -43,15 +43,71 @@ const errorHandler = ex => {
   }
 
   const normalRouter = () => {
+    const customerid = '20080255'
+    const apiKey = '416847ac4d15ef67833b77f19a2a5eba59b44e03'
+    const paytype = 'wxscan'
+
+    server.get('/favicon.ico', (req, res) => {
+      res.status(200).sendFile('favicon.ico', {
+        root: __dirname + '/static/',
+      })
+    });
+
+    server.get('/payment/make', (req, res) => {
+      const md5 = require('md5')
+      const queryString = require('query-string')
+
+      const { sdorderno, total_fee } = req.query
+      const version = '1.0'
+      const gatewayEndpoint = 'http://www.guupay.com/apisubmit'
+      const notifyurl = 'http://video.xiangmin.net/payment/async'
+      const returnurl = 'http://video.xiangmin.net/payment/sync'
+
+      const varibles = {
+        version,
+        customerid,
+        sdorderno,
+        total_fee,
+        notifyurl,
+        returnurl,
+        paytype,
+        sign: md5(`version=${version}&customerid=${customerid}&total_fee=${total_fee}&sdorderno=${sdorderno}&notifyurl=${notifyurl}&returnurl=${returnurl}&${apiKey}`),
+      }
+      res.redirect(`${gatewayEndpoint}?${queryString.stringify(varibles, { encode: false })}`)
+    })
+
+    // TODO
+    server.post('/payment/async', (req, res) => {
+      console.log(req.body);
+      res.json(req.body);
+    });
+
+    // http://localhost:3000/payment/sync?status=1&customerid=XXX&sdpayno=m2019070221013786051&sdorderno=1562072496550&total_fee=0.01&paytype=wxscan&remark=&sign=YYY
+    server.get('/payment/sync', (req, res) => {
+      let actualPage = '/purchaseFail';
+      let queryParams = {}
+
+      const md5 = require('md5')
+      const { status, sdpayno, sdorderno, total_fee } = req.query
+      const sign = md5(`customerid=${customerid}&status=${status}&sdpayno=${sdpayno}&sdorderno=${sdorderno}&total_fee=${total_fee}&paytype=${paytype}&${apiKey}`)
+
+      if (status === '1' && req.query.sign === sign) {
+        actualPage = '/purchaseDone'
+        queryParams = { ...req.query }
+      }
+
+      app.render(req, res, actualPage, queryParams);
+    });
+
     server.get('/list', (req, res) => {
       const actualPage = '/';
       const queryParams = { ...req.query };
       app.render(req, res, actualPage, queryParams);
     });
 
-    server.get('/watch/:id', (req, res) => {
+    server.get('/watch', (req, res) => {
       const actualPage = '/watch';
-      const queryParams = { videoId: req.params.id };
+      const queryParams = { ...req.query };
       app.render(req, res, actualPage, queryParams);
     });
 

@@ -15,12 +15,12 @@ const Wrapper = styled.button`
   position: absolute;
   left: 0;
   bottom: 0;
-  padding: 10px 24px;
+  padding: 6px 24px;
   border: none;
   border-radius: 0;
   width: 100%;
   color: #fff;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
   background: rgba(222, 222, 222, .2);
 
@@ -38,7 +38,7 @@ const GoPurchaseButton: NextFunctionComponent<Props> = props => {
 
       Router.push({
         pathname: '/purchase',
-        query: { videoId, amount },
+        query: { videoId },
       })
     }}>
       观看本视频需支付{amount}元

@@ -4,30 +4,42 @@ import { WaveLoading } from 'styled-spinkit'
 import { Box, Image } from 'grommet'
 import { Query } from 'react-apollo'
 import adsQuery from '../queries/adsQuery'
-import { Ads, AdsVariables } from '../queries/types/Ads'
+import { Ads, AdsVariables, Ads_ads } from '../queries/types/Ads'
 import { DUMMY_AD } from '../contants';
 
 interface Props {
   position: string;
   page: string;
-  style?: object;
+  index?: number;
 }
 
 const Wrapper = styled(Box)`
-  min-height: 90px;
-  max-height: 180px;
+  min-height: 50px;
+  max-height: 100px;
 `;
 
 const WhiteSpace = styled.div`
   background: #fff;
-  min-height: 90px;
-  max-height: 180px;
+  min-height: 50px;
+  max-height: 100px;
 `
 
 class AdsQuery extends Query<Ads, AdsVariables> {}
 
+const renderAd = (ad: Ads_ads) => {
+  return (
+    <Link href={ad.link}>
+      <a target="_blank">
+        <Wrapper fill="horizontal" background="white" pad="medium">
+          <Image fit="cover" src={ad.thumbnail ? ad.thumbnail.src : DUMMY_AD} />
+        </Wrapper>
+      </a>
+    </Link>
+  )
+}
+
 export default (props: Props) => {
-  const { position, page, style } = props
+  const { position, page } = props
   return (
     <AdsQuery query={adsQuery} variables={{ position, page }}>
       {({ loading, error, data }) => {
@@ -43,27 +55,23 @@ export default (props: Props) => {
           return (<div>Error!</div>)
         }
 
-        if (!data!.ads.length) {
-          if (position === '中部') {
+        if (position === '中部') {
+          if (!data!.ads.length || props.index! / 3 % 1 !== 0) {
             return null
           }
 
+          return renderAd(data!.ads[props.index! / 3 - 1])
+        }
+
+        if (!data!.ads.length) {
           return (
-            <Wrapper fill="horizontal" background="white" pad="medium" style={style}>
+            <Wrapper fill="horizontal" background="white" pad="medium">
               <WhiteSpace/>
             </Wrapper>
           )
         }
 
-        return (
-          <Link href={data!.ads[0].link}>
-            <a target="_blank">
-              <Wrapper fill="horizontal" background="white" pad="medium" style={style}>
-                <Image fit="cover" src={data!.ads[0].thumbnail ? data!.ads[0].thumbnail.src : DUMMY_AD} />
-              </Wrapper>
-            </a>
-          </Link>
-        )
+        return renderAd(data!.ads[0])
       }}
     </AdsQuery>
   )

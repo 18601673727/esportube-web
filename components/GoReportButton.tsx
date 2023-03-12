@@ -7,22 +7,23 @@ const ReportBox = styled(Box)`
   position: fixed;
   width: 100%;
   bottom: 0;
-`
 
-const buttonStyle = {
-  padding: "10px 24px",
-  borderRadius: "30px"
-}
+  Button {
+    padding: 6px 0;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 900;
+  }
+`
 
 export default () => (
   <ReportBox background="white" pad="medium">
     <Button
       primary
       label="投诉"
-      style={buttonStyle}
       onClick={() => {
         Router.push({
-          pathname: '/report',
+          pathname: '/reportType',
         })
       }}
     />

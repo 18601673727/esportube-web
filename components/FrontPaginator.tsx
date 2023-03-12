@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Button, Box } from 'grommet'
+import AdBox from './AdBox'
 
 interface Props {
   total: number;
@@ -10,14 +11,14 @@ interface Props {
   onChange: (route: object) => void;
 }
 
-interface PaginationBoxProps {
+interface ButtonBoxProps {
   page: number;
 }
 
-const PaginationBox = styled(Box)`
-  padding-bottom: 88px;
+const ButtonBox = styled(Box)`
+  padding: 12px 0 88px;
   flex-direction: row;
-  justify-content: ${(props: PaginationBoxProps) => props.page > 1 ? 'space-around' : 'center'};
+  justify-content: ${(props: ButtonBoxProps) => props.page > 1 ? 'space-around' : 'center'};
 
   Button {
     padding: 6px 24px;
@@ -25,37 +26,44 @@ const PaginationBox = styled(Box)`
     color: var(--status-critical);
     background: var(--light-2);
   }
+`
+
+const Wrapper = styled(Box)`
+  margin-top: 7px;
 `;
 
 export default (props: Props) => {
   const { total, page, perPage, categoryId, onChange } = props
 
   return (
-    <PaginationBox background="white" pad="medium" page={page}>
-      {
-        page > 1 ? (
-          <Button
-            plain
-            label="上一页"
-            onClick={() => onChange({
-              pathname: '/list',
-              query: { categoryId, page: page - 1 }
-            })}
-          />
-        ) : null
-      }
-      {
-        Math.ceil(total / perPage) > page ? (
-          <Button
-            plain
-            label="下一页"
-            onClick={() => onChange({
-              pathname: '/list',
-              query: { categoryId, page: page + 1 }
-            })}
-          />
-        ) : null
-      }
-    </PaginationBox>
+    <Wrapper background="white">
+      <AdBox page="index" position="底部" />
+      <ButtonBox page={page}>
+        {
+          page > 1 ? (
+            <Button
+              plain
+              label="上一页"
+              onClick={() => onChange({
+                pathname: '/list',
+                query: { categoryId, page: page - 1 }
+              })}
+            />
+          ) : null
+        }
+        {
+          Math.ceil(total / perPage) > page ? (
+            <Button
+              plain
+              label="下一页"
+              onClick={() => onChange({
+                pathname: '/list',
+                query: { categoryId, page: page + 1 }
+              })}
+            />
+          ) : null
+        }
+      </ButtonBox>
+    </Wrapper>
   )
 }

@@ -21,7 +21,7 @@ const Wrapper = styled.div`
     cursor: pointer;
     display: flex;
     background: var(--white);
-    padding: 14px 14px;
+    padding: 10px 10px;
     border-bottom: 1px solid var(--light-3);
 
     :last-child {
@@ -32,7 +32,7 @@ const Wrapper = styled.div`
   strong {
     flex: 1;
     color: #444;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 400;
   }
 
@@ -46,10 +46,10 @@ export default (props: Props) => (
     <ul>
       {
         props.data!.map((item, _key) => (
-          <Link href={props.data.length > 1 ? '/reportDone' : '/reportType'} key={_key}>
+          <Link href={props.data.length > 1 ? '/report' : '/reportDone'} key={_key}>
             <li>
               <strong>{item.content}</strong>
-              <Next color="#B7B7B7" size="24px"/>
+              <Next color="#B7B7B7" size="18px" style={{ marginTop: 3 }}/>
             </li>
           </Link>
         ))

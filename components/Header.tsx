@@ -24,8 +24,11 @@ const CategoryBar = styled(Box)`
 
 const CategoryButton = styled(Button)`
   white-space: pre;
-  margin-left: 6px;
-  margin-right: 6px;
+  margin: 0 6px;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 0px 22px;
+  line-height: 32px;
 
   :first-child {
     margin-left: 0;
@@ -57,11 +60,17 @@ export default (props: Props) => {
             return (<div>Error!</div>)
           }
 
+          const categories = [{
+            id: 0,
+            name: 'all',
+            chinese_name: '全部',
+          }, ...data!.categories]
+
           return (
             <>
               <CategoryBar>
                 {
-                  data!.categories.map((item, _key) => (
+                  categories.map((item, _key) => (
                     <CategoryButton
                       primary={item.id === category}
                       key={_key}

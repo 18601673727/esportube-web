@@ -3,20 +3,20 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: VideosByCategory
+// GraphQL query operation: Videos
 // ====================================================
 
-export interface VideosByCategory_videos_aggregate_aggregate {
+export interface Videos_videos_aggregate_aggregate {
   __typename: "videos_aggregate_fields";
   count: number | null;
 }
 
-export interface VideosByCategory_videos_aggregate {
+export interface Videos_videos_aggregate {
   __typename: "videos_aggregate";
-  aggregate: VideosByCategory_videos_aggregate_aggregate | null;
+  aggregate: Videos_videos_aggregate_aggregate | null;
 }
 
-export interface VideosByCategory_videos {
+export interface Videos_videos {
   __typename: "videos";
   id: number;
   title: string;
@@ -25,19 +25,19 @@ export interface VideosByCategory_videos {
   thumbnail: any | null;
 }
 
-export interface VideosByCategory {
+export interface Videos {
   /**
    * fetch aggregated fields from the table: "videos"
    */
-  videos_aggregate: VideosByCategory_videos_aggregate;
+  videos_aggregate: Videos_videos_aggregate;
   /**
    * fetch data from the table: "videos"
    */
-  videos: VideosByCategory_videos[];
+  videos: Videos_videos[];
 }
 
-export interface VideosByCategoryVariables {
-  categoryId: number;
+export interface VideosVariables {
+  categoryId?: number | null;
   offset: number;
   limit: number;
 }

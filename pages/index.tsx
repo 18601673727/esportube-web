@@ -1,5 +1,6 @@
 import React from 'react'
-import Router from 'next/router';
+import Head from 'next/head'
+import Router from 'next/router'
 import styled from 'styled-components'
 import { NextFunctionComponent, NextContext } from 'next'
 import { Grid } from 'grommet'
@@ -21,12 +22,15 @@ const Wrapper = styled(Grid)`
 const Index: NextFunctionComponent<Props> = ({ categoryId, page }) => {
   return (
     <FrontLayout>
+      <Head>
+        <title>首页</title>
+      </Head>
       <useIndexPageContext.Provider
         initialCategory={categoryId}
         initialPage={page}
       >
         <Wrapper
-          rows={['240px', 'auto']}
+          rows={['auto', 'auto']}
           columns={['100%']}
           areas={[
             { name: 'header', start: [0, 0], end: [0, 1] },
@@ -44,7 +48,7 @@ const Index: NextFunctionComponent<Props> = ({ categoryId, page }) => {
 }
 
 Index.getInitialProps = ({ query }: NextContext) => {
-  const categoryId = query.categoryId ? parseInt(query.categoryId.toString()) : 1
+  const categoryId = 'categoryId' in query ? parseInt(query.categoryId!.toString()) : 0
   const page = query.page ? parseInt(query.page.toString()) : 1
   return { categoryId, page }
 }

@@ -1,16 +1,15 @@
-import arrayInsertRandom from 'array-insert-random'
 import React from 'react'
 import styled from 'styled-components'
 import Link from 'next/link'
 import { Query } from 'react-apollo'
 import { Image, Box } from 'grommet'
-import { Group, CirclePlay } from 'grommet-icons'
+import { Group } from 'grommet-icons'
 import { WaveLoading } from 'styled-spinkit'
-import { VideosByCategory, VideosByCategoryVariables } from '../queries/types/VideosByCategory'
-import videosByCategoryQuery from '../queries/videosQuery'
 import useIndexPageContext from '../contexts/indexPage'
 import AdBox from './AdBox'
 import FrontPaginator from './FrontPaginator'
+import videosQuery from '../queries/videosQuery'
+import { Videos, VideosVariables } from '../queries/types/Videos'
 import { DUMMY_IMAGE } from '../contants'
 
 interface Props {
@@ -30,30 +29,23 @@ const FloatTitle = styled.div`
   width: calc(100% - 24px);
   user-select: none;
 
+  h3 {
+    flex: 1;
+  }
+
   h3, h4 {
-    font-size: 18px;
-    display: flex;
+    font-size: 14px;
     margin: 0;
+  }
+
+  svg {
+    margin-top: 4px;
+    margin-right: 6px;
   }
 `
 const VideoThumbnail = styled(Image)`
   user-select: none;
 `
-const VideoCirclePlay = styled(CirclePlay)`
-  position: absolute;
-  left: calc(50% - 48px);
-  top: calc(50% - 56px);
-
-  &:hover, &:active {
-    cursor: pointer;
-    fill: var(--brand);
-    stroke: var(--brand);
-  }
-`;
-
-const VideoGroup = styled(Group)`
-  margin-right: 6px;
-`;
 
 const VideoList = styled(Box)`
   margin-top: 14px;
@@ -62,6 +54,10 @@ const VideoList = styled(Box)`
 const VideoListItem = styled(Box)`
   position: relative;
   margin: 6px 0;
+
+  &:hover, &:active {
+    cursor: pointer;
+  }
 
   :first-child {
     margin-top: 0;
@@ -72,22 +68,23 @@ const VideoListItem = styled(Box)`
   }
 `;
 
-class VideosByCategoryQuery extends Query<VideosByCategory, VideosByCategoryVariables> {}
+class VideosQuery extends Query<Videos, VideosVariables> {}
 
 export default (props: Props) => {
   const { category, page } = useIndexPageContext()
   const { onPaginationClick } = props
-  const limit = 2
+
+  const limit = 9
   const offset = page * limit - limit
 
   return (
     <Box gridArea="main" background="light-2">
-      <VideosByCategoryQuery
-        query={videosByCategoryQuery}
+      <VideosQuery
+        query={videosQuery}
         variables={{
-          categoryId: category,
-          offset,
           limit,
+          offset,
+          categoryId: category ? category : null
         }}
       >
         {({ loading, error, data }) => {
@@ -103,37 +100,33 @@ export default (props: Props) => {
             return (<div>Error!</div>)
           }
 
-          const middleList: Array<any> = []
-          const middleAds = <AdBox page="index" position="中部"/>
-          const middleData = data!.videos.map(video => (
-            <Link href={`/watch/${video.id}`}>
-              <VideoListItem
-                fill="horizontal"
-                height="small"
-                background="white"
-                pad="medium"
-              >
-                <VideoThumbnail fit="cover" src={video.thumbnail ? video.thumbnail.src : DUMMY_IMAGE}/>
-                <VideoCirclePlay color="white" size="xlarge" />
-                <FloatTitle>
-                  <h3>{video.title}</h3>
-                  <h4><VideoGroup color="accent-3"/>{video.viewer_count}人</h4>
-                </FloatTitle>
-              </VideoListItem>
-            </Link>
-          ))
-
-          arrayInsertRandom(middleData, [middleAds])
-
-          middleData.forEach((item, key) => {
-            middleList.push({...item, key})
-          })
-
           return (
             <VideoList>
-              { middleList }
+              {
+                data!.videos.map((video, key) => {
+                  return (
+                    <React.Fragment key={key}>
+                      <Link href={`/watch?id=${video.id}`}>
+                        <VideoListItem
+                          fill="horizontal"
+                          height="small"
+                          background="white"
+                          pad="medium"
+                        >
+                          <VideoThumbnail fit="cover" src={video.thumbnail ? video.thumbnail.src : DUMMY_IMAGE}/>
+                          <FloatTitle>
+                            <h3>{video.title}</h3>
+                            <Group size="16px" color="accent-3"/>
+                            <h4>{video.viewer_count}人</h4>
+                          </FloatTitle>
+                        </VideoListItem>
+                      </Link>
 
-              <AdBox page="index" position="底部" style={{ marginTop: "7px" }} />
+                      <AdBox page="index" position="中部" index={key + 1}/>
+                    </React.Fragment>
+                  )
+                })
+              }
 
               <FrontPaginator
                 total={data!.videos_aggregate!.aggregate!.count!}
@@ -145,7 +138,7 @@ export default (props: Props) => {
             </VideoList>
           )
         }}
-      </VideosByCategoryQuery>
+      </VideosQuery>
     </Box>
   )
 }

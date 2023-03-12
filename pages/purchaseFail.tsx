@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import FrontLayout from '../components/FrontLayout'
-import { SUCCESS_ARROW } from '../contants'
 
 const Wrapper = styled.div`
   display: flex;
@@ -10,15 +9,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   padding: 20% 0 0;
   box-sizing: border-box;
-
-  i {
-    display: block;
-    margin: 0 auto;
-    width: 110px;
-    height: 110px;
-    background-image: url(${SUCCESS_ARROW});
-    background-size: cover;
-  }
 
   strong {
     display: block;
@@ -37,6 +27,7 @@ const Wrapper = styled.div`
     font-size: 14px;
     font-weight: 400;
     line-height: 24px;
+    text-align: center;
     box-sizing: border-box;
   }
 `
@@ -44,10 +35,9 @@ const Wrapper = styled.div`
 export default () => (
   <FrontLayout>
     <Wrapper>
-      <i className="wechat-success"/>
-      <strong>投诉已提交</strong>
+      <strong>支付失败</strong>
       <p>
-        <span>微信团队会核实，并通过“微信团队”通知您审核结果，感谢您的支持。</span>
+        <span>非常抱歉，请与管理员联系</span>
       </p>
     </Wrapper>
   </FrontLayout>

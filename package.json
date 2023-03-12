@@ -12,7 +12,7 @@
     "apgen": "apollo codegen:generate --localSchemaFile=schema.json  --target=typescript --includes=queries/*.ts --tagName=gql --globalTypesFile=types/graphql-global-types.ts --addTypename types"
   },
   "dependencies": {
-    "@material-ui/core": "^4.1.2",
+    "@types/md5": "^2.1.33",
     "@types/next": "^8.0.1",
     "@types/react": "^16.8.6",
     "@types/styled-components": "^4.1.11",
@@ -21,7 +21,6 @@
     "apollo-cache-inmemory": "^1.6.2",
     "apollo-client": "^2.6.3",
     "apollo-link-http": "^1.5.15",
-    "array-insert-random": "^1.0.2",
     "constate": "^1.1.1",
     "express": "^4.17.1",
     "graphql": "^14.3.1",
@@ -30,9 +29,11 @@
     "grommet-icons": "^4.2.0",
     "grommet-styles": "^0.2.0",
     "isomorphic-unfetch": "^3.0.0",
+    "md5": "^2.2.1",
     "next": "8.1.0",
     "next-apollo": "^2.1.3",
     "next-progressbar": "^1.0.0",
+    "query-string": "^6.8.1",
     "react": "16.8.6",
     "react-apollo": "^2.5.6",
     "react-dom": "16.8.6",

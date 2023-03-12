@@ -52,17 +52,28 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 
-const getRandomName = (min: number, max: number) => Math.round(Math.random() * (max - min + 1) + min)
-const getRandomMoney = (min: number, max: number) => (Math.random() * (max - min) + min).toFixed(2)
+declare let window: any;
+
+if (typeof window !== 'undefined') {
+  const getRandomName = (min: number, max: number) => Math.round(Math.random() * (max - min + 1) + min)
+  const getRandomMoney = (min: number, max: number) => (Math.random() * (max - min) + min).toFixed(2)
+
+  if (!window.toastInterval) {
+    window.toastInterval = setInterval(() => {
+      toaster.notify(
+        `${PUSH_NICENAMES[getRandomName(0, PUSH_NICENAMES.length)]}***刚刚打赏了${getRandomMoney(2.00, 9.99)}元`,
+        { duration: 2000 }
+      )
+    }, 5000)
+  }
+
+  toaster.notify(
+    `${PUSH_NICENAMES[getRandomName(0, PUSH_NICENAMES.length)]}***刚刚打赏了${getRandomMoney(2.00, 9.99)}元`,
+    { duration: 2000 }
+  )
+}
 
 export default ({ children }: Props) => {
-  setInterval(() => {
-    toaster.notify(
-      `${PUSH_NICENAMES[getRandomName(0, PUSH_NICENAMES.length)]}***刚刚打赏了${getRandomMoney(2.00, 9.99)}元`,
-      { duration: 2000 }
-    )
-  }, 3500)
-
   return (
     <ApolloProvider client={client}>
       <GlobalStyle/>

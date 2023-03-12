@@ -20,7 +20,7 @@ const Wrapper = styled.div`
     user-select: none;
     position: absolute;
     left: 50px;
-    top: calc(50% - 20px);
+    top: calc(50% - 19px);
     font-size: 36px;
     font-weight: 400;
     color: #fff;

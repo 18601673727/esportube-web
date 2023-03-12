@@ -20,7 +20,7 @@ const Wrapper = styled.div`
   p {
     margin: 0;
     padding: 14px 14px 10px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 400;
   }
 `
@@ -34,6 +34,7 @@ const Footer = styled.footer`
 
   a {
     color: var(--dark-3);
+    font-size: 12px;
     text-decoration: none;
   }
 `
