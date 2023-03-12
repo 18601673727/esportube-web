@@ -21,8 +21,8 @@ export interface VideosByCategory_videos {
   id: number;
   title: string;
   price: any;
-  thumb_url: string | null;
   viewer_count: number;
+  thumbnail: any | null;
 }
 
 export interface VideosByCategory {

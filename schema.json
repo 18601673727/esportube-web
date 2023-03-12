@@ -1001,6 +1001,25 @@
         "description": "columns and relationships of \"ads\"",
         "fields": [
           {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null,
+                "__typename": "__Type"
+              },
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
+          {
             "name": "id",
             "description": null,
             "args": [],
@@ -1058,25 +1077,6 @@
             "__typename": "__Field"
           },
           {
-            "name": "pic_url",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null,
-                "__typename": "__Type"
-              },
-              "__typename": "__Type"
-            },
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "__typename": "__Field"
-          },
-          {
             "name": "position",
             "description": null,
             "args": [],
@@ -1108,6 +1108,33 @@
                 "ofType": null,
                 "__typename": "__Type"
               },
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
+          {
+            "name": "thumbnail",
+            "description": null,
+            "args": [
+              {
+                "name": "path",
+                "description": "JSON select path",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              }
+            ],
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
               "__typename": "__Type"
             },
             "isDeprecated": false,
@@ -1523,6 +1550,30 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "ads_append_input",
+        "description": "append existing jsonb value of filtered columns with new jsonb value",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "ads_arr_rel_insert_input",
         "description": "input type for inserting array relation for remote table \"ads\"",
         "fields": null,
@@ -1578,6 +1629,20 @@
         "description": "aggregate avg on columns",
         "fields": [
           {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
+          {
             "name": "id",
             "description": null,
             "args": [],
@@ -1618,6 +1683,18 @@
         "description": "order by avg() on columns of table \"ads\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
           {
             "name": "id",
             "description": null,
@@ -1701,6 +1778,18 @@
             "__typename": "__InputValue"
           },
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "integer_comparison_exp",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -1737,18 +1826,6 @@
             "__typename": "__InputValue"
           },
           {
-            "name": "pic_url",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "text_comparison_exp",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "defaultValue": null,
-            "__typename": "__InputValue"
-          },
-          {
             "name": "position",
             "description": null,
             "type": {
@@ -1766,6 +1843,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "integer_comparison_exp",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "jsonb_comparison_exp",
               "ofType": null,
               "__typename": "__Type"
             },
@@ -1799,10 +1888,99 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "ads_delete_at_path_input",
+        "description": "delete the field or element with specified path (for JSON arrays, negative integers count from the end)",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null,
+                "__typename": "__Type"
+              },
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ads_delete_elem_input",
+        "description": "delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ads_delete_key_input",
+        "description": "delete key/value pair or string element. key/value pairs are matched based on their key value",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "ads_inc_input",
         "description": "input type for incrementing integer columne in table \"ads\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
           {
             "name": "id",
             "description": null,
@@ -1840,6 +2018,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -1865,18 +2055,6 @@
           },
           {
             "name": "page",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "defaultValue": null,
-            "__typename": "__InputValue"
-          },
-          {
-            "name": "pic_url",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -1910,6 +2088,18 @@
             },
             "defaultValue": null,
             "__typename": "__InputValue"
+          },
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
           }
         ],
         "interfaces": null,
@@ -1922,6 +2112,20 @@
         "name": "ads_max_fields",
         "description": "aggregate max on columns",
         "fields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
           {
             "name": "id",
             "description": null,
@@ -1952,20 +2156,6 @@
           },
           {
             "name": "page",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "__typename": "__Field"
-          },
-          {
-            "name": "pic_url",
             "description": null,
             "args": [],
             "type": {
@@ -2020,6 +2210,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -2045,18 +2247,6 @@
           },
           {
             "name": "page",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "defaultValue": null,
-            "__typename": "__InputValue"
-          },
-          {
-            "name": "pic_url",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -2103,6 +2293,20 @@
         "description": "aggregate min on columns",
         "fields": [
           {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
+          {
             "name": "id",
             "description": null,
             "args": [],
@@ -2132,20 +2336,6 @@
           },
           {
             "name": "page",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "__typename": "__Field"
-          },
-          {
-            "name": "pic_url",
             "description": null,
             "args": [],
             "type": {
@@ -2200,6 +2390,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -2225,18 +2427,6 @@
           },
           {
             "name": "page",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "defaultValue": null,
-            "__typename": "__InputValue"
-          },
-          {
-            "name": "pic_url",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -2441,6 +2631,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -2477,18 +2679,6 @@
             "__typename": "__InputValue"
           },
           {
-            "name": "pic_url",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "defaultValue": null,
-            "__typename": "__InputValue"
-          },
-          {
             "name": "position",
             "description": null,
             "type": {
@@ -2506,6 +2696,42 @@
             "type": {
               "kind": "ENUM",
               "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ads_prepend_input",
+        "description": "prepend existing jsonb value of filtered columns with new jsonb value",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
               "ofType": null,
               "__typename": "__Type"
             },
@@ -2527,6 +2753,13 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "click_count",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__EnumValue"
+          },
+          {
             "name": "id",
             "description": "column name",
             "isDeprecated": false,
@@ -2548,13 +2781,6 @@
             "__typename": "__EnumValue"
           },
           {
-            "name": "pic_url",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "__typename": "__EnumValue"
-          },
-          {
             "name": "position",
             "description": "column name",
             "isDeprecated": false,
@@ -2563,6 +2789,13 @@
           },
           {
             "name": "sort",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__EnumValue"
+          },
+          {
+            "name": "thumbnail",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null,
@@ -2579,6 +2812,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -2615,18 +2860,6 @@
             "__typename": "__InputValue"
           },
           {
-            "name": "pic_url",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "defaultValue": null,
-            "__typename": "__InputValue"
-          },
-          {
             "name": "position",
             "description": null,
             "type": {
@@ -2644,6 +2877,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
               "ofType": null,
               "__typename": "__Type"
             },
@@ -2661,6 +2906,20 @@
         "name": "ads_stddev_fields",
         "description": "aggregate stddev on columns",
         "fields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
           {
             "name": "id",
             "description": null,
@@ -2703,6 +2962,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -2737,6 +3008,20 @@
         "name": "ads_stddev_pop_fields",
         "description": "aggregate stddev_pop on columns",
         "fields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
           {
             "name": "id",
             "description": null,
@@ -2779,6 +3064,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -2813,6 +3110,20 @@
         "name": "ads_stddev_samp_fields",
         "description": "aggregate stddev_samp on columns",
         "fields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
           {
             "name": "id",
             "description": null,
@@ -2855,6 +3166,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -2889,6 +3212,20 @@
         "name": "ads_sum_fields",
         "description": "aggregate sum on columns",
         "fields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
           {
             "name": "id",
             "description": null,
@@ -2931,6 +3268,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -2969,6 +3318,13 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "click_count",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__EnumValue"
+          },
+          {
             "name": "id",
             "description": "column name",
             "isDeprecated": false,
@@ -2990,13 +3346,6 @@
             "__typename": "__EnumValue"
           },
           {
-            "name": "pic_url",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "__typename": "__EnumValue"
-          },
-          {
             "name": "position",
             "description": "column name",
             "isDeprecated": false,
@@ -3005,6 +3354,13 @@
           },
           {
             "name": "sort",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__EnumValue"
+          },
+          {
+            "name": "thumbnail",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null,
@@ -3019,6 +3375,20 @@
         "name": "ads_var_pop_fields",
         "description": "aggregate var_pop on columns",
         "fields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
           {
             "name": "id",
             "description": null,
@@ -3061,6 +3431,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -3095,6 +3477,20 @@
         "name": "ads_var_samp_fields",
         "description": "aggregate var_samp on columns",
         "fields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
           {
             "name": "id",
             "description": null,
@@ -3137,6 +3533,18 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
             "name": "id",
             "description": null,
             "type": {
@@ -3171,6 +3579,20 @@
         "name": "ads_variance_fields",
         "description": "aggregate variance on columns",
         "fields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "__typename": "__Field"
+          },
           {
             "name": "id",
             "description": null,
@@ -3212,6 +3634,18 @@
         "description": "order by variance() on columns of table \"ads\"",
         "fields": null,
         "inputFields": [
+          {
+            "name": "click_count",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
           {
             "name": "id",
             "description": null,
@@ -6657,6 +7091,227 @@
         "__typename": "__Type"
       },
       {
+        "kind": "SCALAR",
+        "name": "jsonb",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "jsonb_comparison_exp",
+        "description": "expression to compare columns of type jsonb. All fields are combined with logical 'AND'.",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "_contained_in",
+            "description": "is the column contained in the given json value",
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_contains",
+            "description": "does the column contain the given json value at the top level",
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_eq",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_gt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_gte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_has_key",
+            "description": "does the string exist as a top-level key in the column",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_has_keys_all",
+            "description": "do all of these strings exist as top-level keys in the column",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "__typename": "__Type"
+              },
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_has_keys_any",
+            "description": "do any of these strings exist as top-level keys in the column",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "__typename": "__Type"
+              },
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_in",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "jsonb",
+                "ofType": null,
+                "__typename": "__Type"
+              },
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_is_null",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_lt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_lte",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_neq",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          },
+          {
+            "name": "_nin",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "jsonb",
+                "ofType": null,
+                "__typename": "__Type"
+              },
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
         "kind": "OBJECT",
         "name": "mutation_root",
         "description": "mutation root",
@@ -7096,11 +7751,71 @@
             "description": "update data of the table: \"ads\"",
             "args": [
               {
+                "name": "_append",
+                "description": "append existing jsonb value of filtered columns with new jsonb value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "ads_append_input",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              },
+              {
+                "name": "_delete_at_path",
+                "description": "delete the field or element with specified path (for JSON arrays, negative integers count from the end)",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "ads_delete_at_path_input",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              },
+              {
+                "name": "_delete_elem",
+                "description": "delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "ads_delete_elem_input",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              },
+              {
+                "name": "_delete_key",
+                "description": "delete key/value pair or string element. key/value pairs are matched based on their key value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "ads_delete_key_input",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              },
+              {
                 "name": "_inc",
                 "description": "increments the integer columns with given value of the filtered values",
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "ads_inc_input",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              },
+              {
+                "name": "_prepend",
+                "description": "prepend existing jsonb value of filtered columns with new jsonb value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "ads_prepend_input",
                   "ofType": null,
                   "__typename": "__Type"
                 },
@@ -7320,11 +8035,71 @@
             "description": "update data of the table: \"videos\"",
             "args": [
               {
+                "name": "_append",
+                "description": "append existing jsonb value of filtered columns with new jsonb value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "videos_append_input",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              },
+              {
+                "name": "_delete_at_path",
+                "description": "delete the field or element with specified path (for JSON arrays, negative integers count from the end)",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "videos_delete_at_path_input",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              },
+              {
+                "name": "_delete_elem",
+                "description": "delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "videos_delete_elem_input",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              },
+              {
+                "name": "_delete_key",
+                "description": "delete key/value pair or string element. key/value pairs are matched based on their key value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "videos_delete_key_input",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              },
+              {
                 "name": "_inc",
                 "description": "increments the integer columns with given value of the filtered values",
                 "type": {
                   "kind": "INPUT_OBJECT",
                   "name": "videos_inc_input",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              },
+              {
+                "name": "_prepend",
+                "description": "prepend existing jsonb value of filtered columns with new jsonb value",
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "videos_prepend_input",
                   "ofType": null,
                   "__typename": "__Type"
                 },
@@ -13167,12 +13942,25 @@
             "__typename": "__Field"
           },
           {
-            "name": "thumb_url",
+            "name": "thumbnail",
             "description": null,
-            "args": [],
+            "args": [
+              {
+                "name": "path",
+                "description": "JSON select path",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null,
+                  "__typename": "__Type"
+                },
+                "defaultValue": null,
+                "__typename": "__InputValue"
+              }
+            ],
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "jsonb",
               "ofType": null,
               "__typename": "__Type"
             },
@@ -13627,6 +14415,30 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "videos_append_input",
+        "description": "append existing jsonb value of filtered columns with new jsonb value",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "videos_arr_rel_insert_input",
         "description": "input type for inserting array relation for remote table \"videos\"",
         "fields": null,
@@ -13917,11 +14729,11 @@
             "__typename": "__InputValue"
           },
           {
-            "name": "thumb_url",
+            "name": "thumbnail",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "text_comparison_exp",
+              "name": "jsonb_comparison_exp",
               "ofType": null,
               "__typename": "__Type"
             },
@@ -13974,6 +14786,83 @@
             "__typename": "__EnumValue"
           }
         ],
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "videos_delete_at_path_input",
+        "description": "delete the field or element with specified path (for JSON arrays, negative integers count from the end)",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null,
+                "__typename": "__Type"
+              },
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "videos_delete_elem_input",
+        "description": "delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "videos_delete_key_input",
+        "description": "delete key/value pair or string element. key/value pairs are matched based on their key value",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
         "possibleTypes": null,
         "__typename": "__Type"
       },
@@ -14092,11 +14981,11 @@
             "__typename": "__InputValue"
           },
           {
-            "name": "thumb_url",
+            "name": "thumbnail",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "jsonb",
               "ofType": null,
               "__typename": "__Type"
             },
@@ -14182,20 +15071,6 @@
           },
           {
             "name": "source_url",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "__typename": "__Field"
-          },
-          {
-            "name": "thumb_url",
             "description": null,
             "args": [],
             "type": {
@@ -14298,18 +15173,6 @@
             "__typename": "__InputValue"
           },
           {
-            "name": "thumb_url",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "defaultValue": null,
-            "__typename": "__InputValue"
-          },
-          {
             "name": "title",
             "description": null,
             "type": {
@@ -14401,20 +15264,6 @@
             "__typename": "__Field"
           },
           {
-            "name": "thumb_url",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "isDeprecated": false,
-            "deprecationReason": null,
-            "__typename": "__Field"
-          },
-          {
             "name": "title",
             "description": null,
             "args": [],
@@ -14493,18 +15342,6 @@
           },
           {
             "name": "source_url",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null,
-              "__typename": "__Type"
-            },
-            "defaultValue": null,
-            "__typename": "__InputValue"
-          },
-          {
-            "name": "thumb_url",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -14769,7 +15606,7 @@
             "__typename": "__InputValue"
           },
           {
-            "name": "thumb_url",
+            "name": "thumbnail",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -14798,6 +15635,30 @@
             "type": {
               "kind": "ENUM",
               "name": "order_by",
+              "ofType": null,
+              "__typename": "__Type"
+            },
+            "defaultValue": null,
+            "__typename": "__InputValue"
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null,
+        "__typename": "__Type"
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "videos_prepend_input",
+        "description": "prepend existing jsonb value of filtered columns with new jsonb value",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "thumbnail",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "jsonb",
               "ofType": null,
               "__typename": "__Type"
             },
@@ -14847,7 +15708,7 @@
             "__typename": "__EnumValue"
           },
           {
-            "name": "thumb_url",
+            "name": "thumbnail",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null,
@@ -14926,11 +15787,11 @@
             "__typename": "__InputValue"
           },
           {
-            "name": "thumb_url",
+            "name": "thumbnail",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "jsonb",
               "ofType": null,
               "__typename": "__Type"
             },
@@ -15516,7 +16377,7 @@
             "__typename": "__EnumValue"
           },
           {
-            "name": "thumb_url",
+            "name": "thumbnail",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null,

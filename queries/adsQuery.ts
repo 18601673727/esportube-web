@@ -7,8 +7,8 @@ export default gql`
       sort
       link
       page
-      pic_url
       position
+      thumbnail
     }
   }
 `

@@ -11,7 +11,7 @@ export interface BrowseVideo_update_videos_returning {
   id: number;
   title: string;
   price: any;
-  thumb_url: string | null;
+  thumbnail: any | null;
   viewer_count: number;
 }
 

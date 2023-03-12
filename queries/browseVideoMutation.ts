@@ -8,7 +8,7 @@ export default gql`
         id
         title
         price
-        thumb_url
+        thumbnail
         viewer_count
       }
     }

@@ -15,6 +15,7 @@ export type Scalars = {
 /** columns and relationships of "ads" */
 export type Ads = {
   __typename?: "ads";
+  click_count: Scalars["Int"];
   id: Scalars["Int"];
   link: Scalars["String"];
   page: Scalars["String"];
@@ -76,12 +77,14 @@ export type Ads_Arr_Rel_Insert_Input = {
 /** aggregate avg on columns */
 export type Ads_Avg_Fields = {
   __typename?: "ads_avg_fields";
+  click_count?: Maybe<Scalars["Float"]>;
   id?: Maybe<Scalars["Float"]>;
   sort?: Maybe<Scalars["Float"]>;
 };
 
 /** order by avg() on columns of table "ads" */
 export type Ads_Avg_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   sort?: Maybe<Order_By>;
 };
@@ -91,6 +94,7 @@ export type Ads_Bool_Exp = {
   _and?: Maybe<Array<Maybe<Ads_Bool_Exp>>>;
   _not?: Maybe<Ads_Bool_Exp>;
   _or?: Maybe<Array<Maybe<Ads_Bool_Exp>>>;
+  click_count?: Maybe<Integer_Comparison_Exp>;
   id?: Maybe<Integer_Comparison_Exp>;
   link?: Maybe<Text_Comparison_Exp>;
   page?: Maybe<Text_Comparison_Exp>;
@@ -107,12 +111,14 @@ export enum Ads_Constraint {
 
 /** input type for incrementing integer columne in table "ads" */
 export type Ads_Inc_Input = {
+  click_count?: Maybe<Scalars["Int"]>;
   id?: Maybe<Scalars["Int"]>;
   sort?: Maybe<Scalars["Int"]>;
 };
 
 /** input type for inserting data into table "ads" */
 export type Ads_Insert_Input = {
+  click_count?: Maybe<Scalars["Int"]>;
   id?: Maybe<Scalars["Int"]>;
   link?: Maybe<Scalars["String"]>;
   page?: Maybe<Scalars["String"]>;
@@ -124,6 +130,7 @@ export type Ads_Insert_Input = {
 /** aggregate max on columns */
 export type Ads_Max_Fields = {
   __typename?: "ads_max_fields";
+  click_count?: Maybe<Scalars["Int"]>;
   id?: Maybe<Scalars["Int"]>;
   link?: Maybe<Scalars["String"]>;
   page?: Maybe<Scalars["String"]>;
@@ -134,6 +141,7 @@ export type Ads_Max_Fields = {
 
 /** order by max() on columns of table "ads" */
 export type Ads_Max_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   link?: Maybe<Order_By>;
   page?: Maybe<Order_By>;
@@ -145,6 +153,7 @@ export type Ads_Max_Order_By = {
 /** aggregate min on columns */
 export type Ads_Min_Fields = {
   __typename?: "ads_min_fields";
+  click_count?: Maybe<Scalars["Int"]>;
   id?: Maybe<Scalars["Int"]>;
   link?: Maybe<Scalars["String"]>;
   page?: Maybe<Scalars["String"]>;
@@ -155,6 +164,7 @@ export type Ads_Min_Fields = {
 
 /** order by min() on columns of table "ads" */
 export type Ads_Min_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   link?: Maybe<Order_By>;
   page?: Maybe<Order_By>;
@@ -186,6 +196,7 @@ export type Ads_On_Conflict = {
 
 /** ordering options when selecting data from "ads" */
 export type Ads_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   link?: Maybe<Order_By>;
   page?: Maybe<Order_By>;
@@ -196,6 +207,8 @@ export type Ads_Order_By = {
 
 /** select columns of table "ads" */
 export enum Ads_Select_Column {
+  /** column name */
+  ClickCount = "click_count",
   /** column name */
   Id = "id",
   /** column name */
@@ -212,6 +225,7 @@ export enum Ads_Select_Column {
 
 /** input type for updating data in table "ads" */
 export type Ads_Set_Input = {
+  click_count?: Maybe<Scalars["Int"]>;
   id?: Maybe<Scalars["Int"]>;
   link?: Maybe<Scalars["String"]>;
   page?: Maybe<Scalars["String"]>;
@@ -223,12 +237,14 @@ export type Ads_Set_Input = {
 /** aggregate stddev on columns */
 export type Ads_Stddev_Fields = {
   __typename?: "ads_stddev_fields";
+  click_count?: Maybe<Scalars["Float"]>;
   id?: Maybe<Scalars["Float"]>;
   sort?: Maybe<Scalars["Float"]>;
 };
 
 /** order by stddev() on columns of table "ads" */
 export type Ads_Stddev_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   sort?: Maybe<Order_By>;
 };
@@ -236,12 +252,14 @@ export type Ads_Stddev_Order_By = {
 /** aggregate stddev_pop on columns */
 export type Ads_Stddev_Pop_Fields = {
   __typename?: "ads_stddev_pop_fields";
+  click_count?: Maybe<Scalars["Float"]>;
   id?: Maybe<Scalars["Float"]>;
   sort?: Maybe<Scalars["Float"]>;
 };
 
 /** order by stddev_pop() on columns of table "ads" */
 export type Ads_Stddev_Pop_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   sort?: Maybe<Order_By>;
 };
@@ -249,12 +267,14 @@ export type Ads_Stddev_Pop_Order_By = {
 /** aggregate stddev_samp on columns */
 export type Ads_Stddev_Samp_Fields = {
   __typename?: "ads_stddev_samp_fields";
+  click_count?: Maybe<Scalars["Float"]>;
   id?: Maybe<Scalars["Float"]>;
   sort?: Maybe<Scalars["Float"]>;
 };
 
 /** order by stddev_samp() on columns of table "ads" */
 export type Ads_Stddev_Samp_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   sort?: Maybe<Order_By>;
 };
@@ -262,18 +282,22 @@ export type Ads_Stddev_Samp_Order_By = {
 /** aggregate sum on columns */
 export type Ads_Sum_Fields = {
   __typename?: "ads_sum_fields";
+  click_count?: Maybe<Scalars["Int"]>;
   id?: Maybe<Scalars["Int"]>;
   sort?: Maybe<Scalars["Int"]>;
 };
 
 /** order by sum() on columns of table "ads" */
 export type Ads_Sum_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   sort?: Maybe<Order_By>;
 };
 
 /** update columns of table "ads" */
 export enum Ads_Update_Column {
+  /** column name */
+  ClickCount = "click_count",
   /** column name */
   Id = "id",
   /** column name */
@@ -291,12 +315,14 @@ export enum Ads_Update_Column {
 /** aggregate var_pop on columns */
 export type Ads_Var_Pop_Fields = {
   __typename?: "ads_var_pop_fields";
+  click_count?: Maybe<Scalars["Float"]>;
   id?: Maybe<Scalars["Float"]>;
   sort?: Maybe<Scalars["Float"]>;
 };
 
 /** order by var_pop() on columns of table "ads" */
 export type Ads_Var_Pop_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   sort?: Maybe<Order_By>;
 };
@@ -304,12 +330,14 @@ export type Ads_Var_Pop_Order_By = {
 /** aggregate var_samp on columns */
 export type Ads_Var_Samp_Fields = {
   __typename?: "ads_var_samp_fields";
+  click_count?: Maybe<Scalars["Float"]>;
   id?: Maybe<Scalars["Float"]>;
   sort?: Maybe<Scalars["Float"]>;
 };
 
 /** order by var_samp() on columns of table "ads" */
 export type Ads_Var_Samp_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   sort?: Maybe<Order_By>;
 };
@@ -317,12 +345,14 @@ export type Ads_Var_Samp_Order_By = {
 /** aggregate variance on columns */
 export type Ads_Variance_Fields = {
   __typename?: "ads_variance_fields";
+  click_count?: Maybe<Scalars["Float"]>;
   id?: Maybe<Scalars["Float"]>;
   sort?: Maybe<Scalars["Float"]>;
 };
 
 /** order by variance() on columns of table "ads" */
 export type Ads_Variance_Order_By = {
+  click_count?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   sort?: Maybe<Order_By>;
 };

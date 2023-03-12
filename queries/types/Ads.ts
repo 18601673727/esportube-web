@@ -12,8 +12,8 @@ export interface Ads_ads {
   sort: number;
   link: string;
   page: string;
-  pic_url: string;
   position: string;
+  thumbnail: any | null;
 }
 
 export interface Ads {
