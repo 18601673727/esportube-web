@@ -95,7 +95,7 @@ const Watch: NextFunctionComponent<Props> = ({ videoId }) => {
                   {
                     data ? data!.update_videos!.returning[0].price > 0 ? (
                       <NeedPayBlock style={{ height: width }}>
-                        <Image fit="contain" src={data!.update_videos!.returning[0].thumb_url!}/>
+                        <Image fit="contain" src={data!.update_videos!.returning[0].thumbnail.src!}/>
                         <FloatLayer>
                           <Lock size="xlarge" color="white" />
                           <GoPurchaseButton

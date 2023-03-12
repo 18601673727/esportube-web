@@ -11,6 +11,7 @@ import videosByCategoryQuery from '../queries/videosQuery'
 import useIndexPageContext from '../contexts/indexPage'
 import AdBox from './AdBox'
 import FrontPaginator from './FrontPaginator'
+import { DUMMY_IMAGE } from '../contants'
 
 interface Props {
   onPaginationClick: (_: any) => void;
@@ -76,7 +77,7 @@ class VideosByCategoryQuery extends Query<VideosByCategory, VideosByCategoryVari
 export default (props: Props) => {
   const { category, page } = useIndexPageContext()
   const { onPaginationClick } = props
-  const limit = 3
+  const limit = 2
   const offset = page * limit - limit
 
   return (
@@ -112,7 +113,7 @@ export default (props: Props) => {
                 background="white"
                 pad="medium"
               >
-                <VideoThumbnail fit="cover" src={video.thumb_url!}/>
+                <VideoThumbnail fit="cover" src={video.thumbnail ? video.thumbnail.src : DUMMY_IMAGE}/>
                 <VideoCirclePlay color="white" size="xlarge" />
                 <FloatTitle>
                   <h3>{video.title}</h3>

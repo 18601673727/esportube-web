@@ -5,6 +5,7 @@ import { Box, Image } from 'grommet'
 import { Query } from 'react-apollo'
 import adsQuery from '../queries/adsQuery'
 import { Ads, AdsVariables } from '../queries/types/Ads'
+import { DUMMY_AD } from '../contants';
 
 interface Props {
   position: string;
@@ -58,7 +59,7 @@ export default (props: Props) => {
           <Link href={data!.ads[0].link}>
             <a target="_blank">
               <Wrapper fill="horizontal" background="white" pad="medium" style={style}>
-                <Image fit="cover" src={data!.ads[0].pic_url} />
+                <Image fit="cover" src={data!.ads[0].thumbnail ? data!.ads[0].thumbnail.src : DUMMY_AD} />
               </Wrapper>
             </a>
           </Link>
