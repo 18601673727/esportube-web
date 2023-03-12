@@ -26,7 +26,7 @@ const ButtonSection = styled(Box)`
 const PaymentTitle = styled.h3`
   display: block;
   margin: 0 auto;
-  padding: 110px 0 100px;
+  padding: 15px 0 75px;
   text-align: center;
   font-weight: 400;
 `

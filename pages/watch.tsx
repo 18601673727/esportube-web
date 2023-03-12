@@ -1,6 +1,8 @@
 import React from 'react'
 import Router from 'next/router'
 import styled from 'styled-components'
+import NoSSR from 'react-no-ssr'
+import useUnmount from 'react-use/lib/useUnmount'
 import { NextContext, NextFunctionComponent } from 'next'
 import { Button, Box } from 'grommet'
 import { WaveLoading } from 'styled-spinkit'
@@ -11,22 +13,16 @@ import FrontLayout from '../components/FrontLayout'
 import AdBox from '../components/AdBox'
 import Player from '../components/Player'
 import videoSourceQuery from '../queries/videoSourceQuery'
-import playVideoMutation from '../queries/playVideoMutation'
 import browseVideoMutation from '../queries/browseVideoMutation'
 import { VideoSource, VideoSourceVariables } from '../queries/types/VideoSource'
-import { PlayVideo, PlayVideoVariables } from '../queries/types/PlayVideo'
 import { BrowseVideo, BrowseVideoVariables } from '../queries/types/BrowseVideo'
 
 interface Props {
-  videoId: number | null;
-  orderNumber: string | null;
+  id: number | null;
+  goto: string | null;
 }
 
-interface DoValidProps {
-  orderNumber: string;
-  neverUsed: boolean;
-  getVideoSource: (params: object) => void;
-}
+type SourceUrl = string | null;
 
 interface DoBrowseProps {
   videoId: number;
@@ -42,12 +38,11 @@ const Section = styled(Box)`
     font-weight: 400;
     font-size: 14px;
     text-align: center;
-
-    strong {
-      color: var(--accent-4);
-      border-bottom: 1px solid var(--accent-4);
-      font-weight: 900;
-    }
+  }
+  .strong {
+    color: var(--accent-4);
+    border-bottom: 1px solid var(--accent-4);
+    font-weight: 900;
   }
 `;
 
@@ -70,7 +65,6 @@ const EmptyBox = () => (
 )
 
 class BrowseVideoMutation extends Mutation<BrowseVideo, BrowseVideoVariables> {}
-class PlayVideoMutation extends Mutation<PlayVideo, PlayVideoVariables> {}
 class VideoSourceQuery extends Query<VideoSource, VideoSourceVariables> {}
 
 class DoBrowse extends React.Component<DoBrowseProps> {
@@ -84,175 +78,119 @@ class DoBrowse extends React.Component<DoBrowseProps> {
   }
 }
 
-class DoValid extends React.Component<DoValidProps> {
+class DestoryToken extends React.Component<any> {
   componentDidMount() {
-    const { orderNumber, neverUsed, getVideoSource } = this.props
-    getVideoSource({ variables: { orderNumber, neverUsed } })
+    console.log('ready to destory')
+  }
+
+  componentWillUnmount() {
+    console.log('after destory:', window.sessionStorage.getItem('esportube-s'))
+    window.sessionStorage.removeItem('esportube-s')
   }
 
   render() {
-    return null
+    return this.props.children
   }
 }
+
 // TODO: base {last_used_at} baoyue => diffDays(created_at, last_used_at) < 30?
-const Watch: NextFunctionComponent<Props> = ({ videoId, orderNumber }) => {
-  const { session } = useSession('esportube', false)
-  const neverUsed = session !== 'e8125463314348b1a6a02a77ba63134b'
+const Watch: NextFunctionComponent<Props> = ({ id, goto }) => {
+  if (!id) {
+    return <EmptyBox/>
+  }
+
+  let source: SourceUrl = null
+
+  const { session: mToken } = useSession('esportube-m', false)
+  const { session: sToken, clear: clearS } = useSession('esportube-s', false)
+  const subscribed = mToken === 'e8125463314348b1a6a02a77ba63134b'
+
+  useUnmount(clearS)
 
   return (
     <FrontLayout>
-      <AdBox page="watch" position="顶部" />
-
-      {
-        !neverUsed ? (
-          <Section background="white">
-            <div>
-              <p className="baoyue">您正在使用<strong>包月权益</strong>免费观看</p>
-            </div>
-          </Section>
-        ) : null
-      }
-
-      <Section background="white" pad="medium">
+      <NoSSR>
+        <AdBox page="watch" position="顶部" />
         {
-          videoId ? (
-            <BrowseVideoMutation mutation={browseVideoMutation}>
-              {(update_videos, { loading, error, data }) => {
-                if (error) {
-                  return <ErrorBox error={error} />
-                }
+          subscribed ? (
+            <Section background="white">
+              <div className="baoyue">
+              您正在使用<span className="strong">包月权益</span>免费观看
+              </div>
+            </Section>
+          ) : null
+        }
 
-                if (loading) {
-                  return <LoadingBox/>
-                }
+        <Section background="white" pad="medium">
+          <BrowseVideoMutation mutation={browseVideoMutation}>
+            {(update_videos, { loading, error, data }) => {
+              if (error) {
+                return <ErrorBox error={error} />
+              }
 
-                if (!data) {
-                  return <DoBrowse watch={update_videos} videoId={videoId}/>
-                }
+              if (loading) {
+                return <LoadingBox/>
+              }
 
-                const browsedVideo = data!.update_videos!.returning[0]
-                let source = null
+              if (!data) {
+                return <DoBrowse watch={update_videos} videoId={id}/>
+              }
 
-                if (browsedVideo.price === 0 || !neverUsed) {
-                  return (
-                    <VideoSourceQuery query={videoSourceQuery} variables={{ videoId }}>
-                      {({loading: vLoading, error: vError, data: vData}) => {
-                        if (vError) {
-                          return <ErrorBox error={vError} />
-                        }
+              const browsedVideo = data!.update_videos!.returning[0]
 
-                        if (vLoading || !vData) {
-                          return <LoadingBox/>
-                        }
-
-                        source = vData.videos_by_pk!.source_url
-
-                        return (
-                          <Player
-                            id={browsedVideo.id}
-                            title={browsedVideo.title}
-                            price={browsedVideo.price}
-                            thumbnail={browsedVideo.thumbnail}
-                            source={source}
-                          />
-                        )
-                      }}
-                    </VideoSourceQuery>
-                  )
-                }
-
+              if (typeof sToken === 'string' && sToken.length > 7) {
+                source = sToken.slice()
                 return (
-                  <Player
-                    id={browsedVideo.id}
-                    title={browsedVideo.title}
-                    price={browsedVideo.price}
-                    thumbnail={browsedVideo.thumbnail}
-                    source={null}
-                  />
+                  <DestoryToken>
+                    <Player {...browsedVideo} source={source}/>
+                  </DestoryToken>
                 )
-              }}
-              </BrowseVideoMutation>
-          ) : orderNumber ? (
-            <PlayVideoMutation mutation={playVideoMutation}>
-              {(update_orders, { loading: playerLoading, error: playerError, data: playerData }) => {
-                if (playerError) {
-                  return <ErrorBox error={playerError} />
-                }
+              }
 
-                if (playerLoading) {
-                  return <LoadingBox/>
-                }
-
-                if (!playerData) {
-                  return <DoValid getVideoSource={update_orders} orderNumber={orderNumber} neverUsed={neverUsed} />
-                }
-
-                if (!playerData!.update_orders!.returning.length) {
-                  return <EmptyBox/>
-                }
-
-                const {
-                  last_used_at,
-                  video: { id, source_url }
-                } = playerData!.update_orders!.returning[0]
-
+              if (subscribed || browsedVideo.price === 0) {
                 return (
-                  <BrowseVideoMutation mutation={browseVideoMutation}>
-                    {(update_videos, { loading, error, data }) => {
-                      if (error) {
-                        return <ErrorBox error={error} />
+                  <VideoSourceQuery query={videoSourceQuery} variables={{ videoId: id }}>
+                    {({loading: vLoading, error: vError, data: vData}) => {
+                      if (vError) {
+                        return <ErrorBox error={vError} />
                       }
 
-                      if (loading) {
+                      if (vLoading || !vData) {
                         return <LoadingBox/>
                       }
 
-                      if (!data) {
-                        return <DoBrowse watch={update_videos} videoId={id}/>
-                      }
+                      source = vData.videos_by_pk!.source_url
 
-                      const browsedVideo = data!.update_videos!.returning[0]
-
-                      return (
-                        <Player
-                          id={browsedVideo.id}
-                          title={browsedVideo.title}
-                          price={browsedVideo.price}
-                          thumbnail={browsedVideo.thumbnail}
-                          source={source_url}
-                        />
-                      )
+                      return <Player {...browsedVideo} source={source}/>
                     }}
-                  </BrowseVideoMutation>
+                  </VideoSourceQuery>
                 )
-              }}
-            </PlayVideoMutation>
-          ) : (
-            <EmptyBox/>
-          )
-        }
-      </Section>
+              }
 
-      <Section background="white" pad="medium">
-        <Button
-          reverse
-          label="返回"
-          style={{ padding: "6px 24px", fontSize: '16px', borderRadius: "8px" }}
-          onClick={() => orderNumber ? Router.replace('/') : Router.back()}
-        />
-      </Section>
+              return <Player {...browsedVideo} source={source}/>
+            }}
+          </BrowseVideoMutation>
+        </Section>
 
-      <AdBox page="watch" position="底部" />
-
-      <GoReportButton/>
+        <Section background="white" pad="medium">
+          <Button
+            reverse
+            label="返回"
+            style={{ padding: "6px 24px", fontSize: '16px', borderRadius: "8px" }}
+            onClick={() => goto === '1' ? Router.replace('/') : Router.back()}
+          />
+        </Section>
+        <AdBox page="watch" position="底部" />
+        <GoReportButton/>
+      </NoSSR>
     </FrontLayout>
   )
 }
 
 Watch.getInitialProps = ({ query }: NextContext) => {
-  const videoId = isNaN(Number(query.id)) ? null : Number(query.id)
-  const orderNumber = query.ono ? query.ono.toString() : null
-  return { videoId, orderNumber }
+  const id = isNaN(Number(query.id)) ? null : Number(query.id)
+  const goto = query.goto ? query.goto.toString() : null
+  return { id, goto }
 }
 
 export default Watch

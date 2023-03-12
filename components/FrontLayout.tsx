@@ -1,5 +1,6 @@
 import 'isomorphic-fetch'
 import React from 'react'
+import Router from 'next/router'
 import ApolloClient from 'apollo-client'
 import toaster from 'toasted-notes'
 import { InMemoryCache } from 'apollo-cache-inmemory'

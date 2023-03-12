@@ -76,8 +76,7 @@ export default (props: Props) => {
                       key={_key}
                       label={item.chinese_name}
                       onClick={() => onClick({
-                        pathname: '/list',
-                        query: { categoryId: item.id, page: 1 }
+                        pathname: `/category/${item.id}/page/1`
                       })}
                     />
                   ))

@@ -1,9 +1,16 @@
 const dev = process.env.NODE_ENV !== 'production';
+const domain = process.env.DOMAIN_NAME;
 const express = require('express');
 const server = express();
 const next = require('next');
 const app = next({ dev });
 const handle = app.getRequestHandler();
+
+const apiEndpoint = `http://api.${domain}:8080/v1/query`;
+const h5Domain = `http://www.${domain}`;
+const gatewayEndpoint = 'http://www.guupay.com/apisubmit';
+// const apiEndpoint = `https://esportube.herokuapp.com/v1/query`;
+// const h5Domain = `http://localhost:3000`;
 
 const errorHandler = ex => {
   console.error(ex.stack);
@@ -23,7 +30,7 @@ const errorHandler = ex => {
       'x-hasura-admin-secret': 'cb74937b1e6d11d58e0da6e84d0c304e',
     },
   }
-  const response = await fetch('https://esportube.herokuapp.com/v1/query', params).then(r => r.json())
+  const response = await fetch(apiEndpoint, params).then(r => r.json())
   console.log(">>> 2: ", response[0].value)
   if (response.length) {
     redirectUrl = response[0].value
@@ -46,6 +53,15 @@ const errorHandler = ex => {
     const customerid = '20080255'
     const apiKey = '416847ac4d15ef67833b77f19a2a5eba59b44e03'
     const paytype = 'wxscan'
+    const wechatOnlyMiddleware = (req, res, next) => {
+      if (!/MicroMessenger/i.test(req.headers['user-agent']) && !dev) {
+        res.status(404).send('Not found');
+      }
+
+      next()
+    }
+
+    server.use(wechatOnlyMiddleware);
 
     server.get('/favicon.ico', (req, res) => {
       res.status(200).sendFile('favicon.ico', {
@@ -59,9 +75,8 @@ const errorHandler = ex => {
 
       const { sdorderno, total_fee } = req.query
       const version = '1.0'
-      const gatewayEndpoint = 'http://www.guupay.com/apisubmit'
-      const notifyurl = 'http://video.xiangmin.net/payment/async'
-      const returnurl = 'http://video.xiangmin.net/payment/sync'
+      const notifyurl = `${h5Domain}/payment/async`
+      const returnurl = `${h5Domain}/payment/sync`
 
       const varibles = {
         version,
@@ -99,16 +114,19 @@ const errorHandler = ex => {
       app.render(req, res, actualPage, queryParams);
     });
 
-    server.get('/list', (req, res) => {
-      const actualPage = '/';
-      const queryParams = { ...req.query };
-      app.render(req, res, actualPage, queryParams);
-    });
-
     server.get('/watch', (req, res) => {
       const actualPage = '/watch';
       const queryParams = { ...req.query };
       app.render(req, res, actualPage, queryParams);
+    });
+
+    server.get('/category/:categoryId/page/:page', (req, res) => {
+      app.render(req, res, '/', req.params);
+    });
+
+    server.get('/', (req, res) => {
+      const queryParams = { ...req.query };
+      app.render(req, res, '/', queryParams);
     });
 
     server.get('*', (req, res) => {

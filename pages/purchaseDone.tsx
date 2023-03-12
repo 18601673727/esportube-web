@@ -1,12 +1,12 @@
 import React from 'react'
 import Head from 'next/head'
-import styled from 'styled-components'
 import Router from 'next/router'
-import { NextFunctionComponent, NextContext } from 'next'
+import styled from 'styled-components'
+import NoSSR from 'react-no-ssr'
+import { NextContext } from 'next'
 import { Button, Box } from 'grommet'
 import { FormNextLink } from 'grommet-icons'
 import { WaveLoading } from 'styled-spinkit'
-import { useSession } from  'react-use-session'
 import { Mutation } from 'react-apollo'
 import FrontLayout from '../components/FrontLayout'
 import afterPayMutation from '../queries/afterPayMutation'
@@ -15,6 +15,11 @@ import { consumeOrder, consumeOrderVariables } from '../queries/types/consumeOrd
 interface Props {
   id: string | null;
   payno: string | null;
+}
+
+interface ConsumeTokenProps {
+  id: string;
+  kick: (params: object) => void;
 }
 
 class AfterPayMutation extends Mutation<consumeOrder, consumeOrderVariables> {}
@@ -60,77 +65,99 @@ const Wrapper = styled(Box)`
   }
 `
 
-const PurchaseDone: NextFunctionComponent<Props> = ({ id, payno }) => {
-  if (!id || !payno) {
+class ConsumeToken extends React.Component<ConsumeTokenProps> {
+  componentDidMount() {
+    const { id, kick } = this.props
+    kick({ variables: { id } })
+  }
+
+  render() {
     return null
   }
-
-  let backButton: any = null
-
-  setTimeout(() => {
-    backButton ? backButton.click() : null
-  }, 4000)
-
-  return (
-    <FrontLayout>
-      <Head>
-        <title>支付页</title>
-      </Head>
-      <AfterPayMutation mutation={afterPayMutation}>
-        {(update_orders, { loading, error, data }) => {
-          if (error) {
-            console.error(error)
-            return (<div>Error!</div>)
-          }
-          if (loading) {
-            return (
-              <Box style={{ margin: 'auto' }}>
-                <WaveLoading color="var(--brand)"/>
-              </Box>
-            )
-          }
-          if (!data) {
-            update_orders({variables: { id }})
-          } else {
-            const order = data.update_orders!.returning[0]
-
-            if (order.payment!.type === '包月') {
-              const { save } = useSession('esportube-m', false)
-              save('e8125463314348b1a6a02a77ba63134b')
-            } else {
-              const { save } = useSession('esportube-s', false)
-              save(order.video!.source_url)
-            }
-
-            return (
-              <Wrapper>
-                <section>
-                  <h3>恭喜，<br/>支付成功！</h3>
-                  <p>
-                    <Button
-                      plain
-                      ref={(btn: any) => backButton = btn}
-                      onClick={() => Router.replace(`/watch?id=${order.video!.id}`)}
-                    >
-                      3秒后自动跳转，或立即点击返回 <FormNextLink color="var(--dark-1)" />
-                    </Button>
-                  </p>
-                </section>
-              </Wrapper>
-            )
-          }
-        }}
-      </AfterPayMutation>
-    </FrontLayout>
-  )
 }
 
-PurchaseDone.getInitialProps = ({ query }: NextContext) => {
-  const { sdorderno, sdpayno } = query
-  return {
-    id: sdorderno ? sdorderno.toString() : null,
-    payno: sdpayno ? sdpayno.toString() : null,
+export default class PurchaseDone extends React.Component<Props> {
+  static async getInitialProps({ query }: NextContext) {
+    const { sdorderno, sdpayno } = query
+    return {
+      id: sdorderno ? sdorderno.toString() : null,
+      payno: sdpayno ? sdpayno.toString() : null,
+    }
+  }
+
+  goWatch(id: number, isBaoyue: boolean, token: string) {
+    if (isBaoyue) {
+      window.sessionStorage.setItem('esportube-m', token)
+    } else {
+      window.sessionStorage.setItem('esportube-s', token)
+    }
+
+    Router.replace(`/watch?id=${id}&goto=1`)
+  }
+
+  render() {
+    const { id, payno } = this.props
+
+    if (!id || !payno) {
+      return null
+    }
+
+    let backButton: any = null
+
+    setTimeout(() => {
+      console.log('backButton been called')
+      backButton ? backButton.click() : null
+    }, 1000)
+
+    return (
+      <FrontLayout>
+        <Head>
+          <title>支付页</title>
+        </Head>
+        <NoSSR>
+          <AfterPayMutation mutation={afterPayMutation}>
+            {(update_orders, { loading, error, data }) => {
+              if (error) {
+                console.error(error)
+                return (<div>Error!</div>)
+              }
+              if (loading) {
+                return (
+                  <Box style={{ margin: 'auto' }}>
+                    <WaveLoading color="var(--brand)"/>
+                  </Box>
+                )
+              }
+              if (!data) {
+                return <ConsumeToken kick={update_orders} id={id} />
+              }
+
+              const order = data.update_orders!.returning[0]
+
+              return (
+                <Wrapper>
+                  <section>
+                    <h3>恭喜，<br/>支付成功！</h3>
+                    <p>
+                      <Button
+                        plain
+                        ref={(btn: any) => backButton = btn}
+                        onClick={() => this.goWatch(
+                          order.video!.id,
+                          order.payment!.type === '包月',
+                          order.payment!.type === '包月' ? 'e8125463314348b1a6a02a77ba63134b' : order.video!.source_url
+                        )}
+                      >
+                        3秒内自动跳转，点击可立即播放 <FormNextLink color="var(--dark-1)" />
+                      </Button>
+                    </p>
+                  </section>
+                </Wrapper>
+              )
+            }}
+          </AfterPayMutation>
+        </NoSSR>
+      </FrontLayout>
+    )
   }
 }
-
-export default PurchaseDone

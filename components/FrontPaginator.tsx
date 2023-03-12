@@ -45,8 +45,7 @@ export default (props: Props) => {
               plain
               label="上一页"
               onClick={() => onChange({
-                pathname: '/list',
-                query: { categoryId, page: page - 1 }
+                pathname: `/category/${categoryId}/page/${page - 1}`,
               })}
             />
           ) : null
@@ -57,8 +56,7 @@ export default (props: Props) => {
               plain
               label="下一页"
               onClick={() => onChange({
-                pathname: '/list',
-                query: { categoryId, page: page + 1 }
+                pathname: `/category/${categoryId}/page/${page + 1}`,
               })}
             />
           ) : null

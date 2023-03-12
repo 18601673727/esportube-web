@@ -18,6 +18,7 @@ const Wrapper = styled.div`
     height: 110px;
     background-image: url(${SUCCESS_ARROW});
     background-size: cover;
+    background-repeat: no-repeat;
   }
 
   strong {

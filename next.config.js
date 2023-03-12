@@ -6,6 +6,7 @@ module.exports = withProgressBar(
   withCSS(
     withTypescript({
       // target: 'serverless',
+      useFileSystemPublicRoutes: false,
       progressBar: {
         profile: true,
       },
