@@ -1,156 +1,246 @@
 import React from 'react'
-import Head from 'next/head'
 import Router from 'next/router'
 import styled from 'styled-components'
-import useWindowSize from 'react-use/lib/useWindowSize'
 import { NextContext, NextFunctionComponent } from 'next'
-import { Button, Box, Video, Image } from 'grommet'
-import { Lock } from 'grommet-icons'
+import { Button, Box } from 'grommet'
 import { WaveLoading } from 'styled-spinkit'
 import { Mutation, Query } from 'react-apollo'
-import GoPurchaseButton from '../components/GoPurchaseButton'
+import { useSession } from  'react-use-session'
 import GoReportButton from '../components/GoReportButton'
 import FrontLayout from '../components/FrontLayout'
 import AdBox from '../components/AdBox'
+import Player from '../components/Player'
+import videoSourceQuery from '../queries/videoSourceQuery'
+import playVideoMutation from '../queries/playVideoMutation'
 import browseVideoMutation from '../queries/browseVideoMutation'
-import playVideoQuery from '../queries/playVideoQuery'
-import { BrowseVideo, BrowseVideoVariables } from '../queries/types/BrowseVideo'
+import { VideoSource, VideoSourceVariables } from '../queries/types/VideoSource'
 import { PlayVideo, PlayVideoVariables } from '../queries/types/PlayVideo'
-import { DUMMY_IMAGE } from '../contants'
+import { BrowseVideo, BrowseVideoVariables } from '../queries/types/BrowseVideo'
 
 interface Props {
-  videoId: number;
-  orderNumber: string;
+  videoId: number | null;
+  orderNumber: string | null;
 }
 
-interface CallWatchProps {
+interface DoValidProps {
+  orderNumber: string;
+  neverUsed: boolean;
+  getVideoSource: (params: object) => void;
+}
+
+interface DoBrowseProps {
   videoId: number;
   watch: (params: object) => void;
 }
 
-const PlayerSection = styled(Box)`
+const Section = styled(Box)`
   margin: 14px 0;
+
+  .baoyue {
+    color: var(--placeholder);
+    margin: 10px;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: center;
+
+    strong {
+      color: var(--accent-4);
+      border-bottom: 1px solid var(--accent-4);
+      font-weight: 900;
+    }
+  }
 `;
 
-const ButtonSection = styled(Box)`
-  margin: 14px 0;
-`;
+const LoadingBox = () => (
+  <Box style={{ margin: 'auto' }}>
+    <WaveLoading color="var(--brand)"/>
+  </Box>
+)
 
-const FloatLayer = styled.div`
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  background: rgba(0, 0, 0, .5);
-`
+const ErrorBox = (error: any) => {
+  console.error(error)
+  return (<div>Error!</div>)
+}
 
-const NeedPayBlock = styled(Box)`
-  position: relative;
-`
+const EmptyBox = () => (
+  <>
+    <h3 style={{ textAlign: 'center', marginTop: '50px', fontWeight: 800 }}>404</h3>
+    <p style={{ textAlign: 'center', marginTop: '10px', fontWeight: 200 }}>The video you{"\'"}re looking for couldn{"\'"}t been found.</p>
+  </>
+)
 
 class BrowseVideoMutation extends Mutation<BrowseVideo, BrowseVideoVariables> {}
-class PlayVideoQuery extends Query<PlayVideo, PlayVideoVariables> {}
+class PlayVideoMutation extends Mutation<PlayVideo, PlayVideoVariables> {}
+class VideoSourceQuery extends Query<VideoSource, VideoSourceVariables> {}
 
-class CallWatch extends React.Component<CallWatchProps> {
+class DoBrowse extends React.Component<DoBrowseProps> {
   componentDidMount() {
-    this.props.watch({ variables: { videoId: this.props.videoId } })
+    const { videoId, watch } = this.props
+    watch({ variables: { videoId } })
   }
 
   render() {
-    return this.props.children
+    return null
   }
 }
 
-const Watch: NextFunctionComponent<Props> = ({ videoId, orderNumber }) => {
-  const { width } = useWindowSize()
-
-  if (!videoId) {
-    return (
-      <>
-        <h3 style={{ textAlign: 'center', marginTop: '50px', fontWeight: 800 }}>404</h3>
-        <p style={{ textAlign: 'center', marginTop: '10px', fontWeight: 200 }}>The video you{"\'"}re looking for couldn{"\'"}t been found.</p>
-      </>
-    )
+class DoValid extends React.Component<DoValidProps> {
+  componentDidMount() {
+    const { orderNumber, neverUsed, getVideoSource } = this.props
+    getVideoSource({ variables: { orderNumber, neverUsed } })
   }
+
+  render() {
+    return null
+  }
+}
+// TODO: base {last_used_at} baoyue => diffDays(created_at, last_used_at) < 30?
+const Watch: NextFunctionComponent<Props> = ({ videoId, orderNumber }) => {
+  const { session } = useSession('esportube', false)
+  const neverUsed = session !== 'e8125463314348b1a6a02a77ba63134b'
 
   return (
     <FrontLayout>
       <AdBox page="watch" position="顶部" />
 
-      <PlayerSection background="white" pad="medium">
-        <BrowseVideoMutation mutation={browseVideoMutation}>
-          {(update_videos, { loading, error, data }) => {
-            if (error) {
-              console.error(error)
-              return (<div>Error!</div>)
-            }
+      {
+        !neverUsed ? (
+          <Section background="white">
+            <div>
+              <p className="baoyue">您正在使用<strong>包月权益</strong>免费观看</p>
+            </div>
+          </Section>
+        ) : null
+      }
 
-            return (
-              <CallWatch watch={update_videos} videoId={videoId} >
-                {
-                  loading ? (
-                    <Box style={{ margin: 'auto' }}>
-                      <WaveLoading color="var(--brand)"/>
-                    </Box>
-                  ) : null
+      <Section background="white" pad="medium">
+        {
+          videoId ? (
+            <BrowseVideoMutation mutation={browseVideoMutation}>
+              {(update_videos, { loading, error, data }) => {
+                if (error) {
+                  return <ErrorBox error={error} />
                 }
-                {
-                  data ? data!.update_videos!.returning[0].price > 0 ? (
-                    <NeedPayBlock style={{ height: width }}>
-                      <Image fit="contain" src={data!.update_videos!.returning[0].thumbnail ? data!.update_videos!.returning[0].thumbnail.src! : DUMMY_IMAGE}/>
-                      <FloatLayer>
-                        <Lock size="xlarge" color="white" />
-                        <h3>{orderNumber}</h3>
-                        <GoPurchaseButton
-                          videoId={videoId}
-                          amount={data!.update_videos!.returning[0].price}
+
+                if (loading) {
+                  return <LoadingBox/>
+                }
+
+                if (!data) {
+                  return <DoBrowse watch={update_videos} videoId={videoId}/>
+                }
+
+                const browsedVideo = data!.update_videos!.returning[0]
+                let source = null
+
+                if (browsedVideo.price === 0 || !neverUsed) {
+                  return (
+                    <VideoSourceQuery query={videoSourceQuery} variables={{ videoId }}>
+                      {({loading: vLoading, error: vError, data: vData}) => {
+                        if (vError) {
+                          return <ErrorBox error={vError} />
+                        }
+
+                        if (vLoading || !vData) {
+                          return <LoadingBox/>
+                        }
+
+                        source = vData.videos_by_pk!.source_url
+
+                        return (
+                          <Player
+                            id={browsedVideo.id}
+                            title={browsedVideo.title}
+                            price={browsedVideo.price}
+                            thumbnail={browsedVideo.thumbnail}
+                            source={source}
+                          />
+                        )
+                      }}
+                    </VideoSourceQuery>
+                  )
+                }
+
+                return (
+                  <Player
+                    id={browsedVideo.id}
+                    title={browsedVideo.title}
+                    price={browsedVideo.price}
+                    thumbnail={browsedVideo.thumbnail}
+                    source={null}
+                  />
+                )
+              }}
+              </BrowseVideoMutation>
+          ) : orderNumber ? (
+            <PlayVideoMutation mutation={playVideoMutation}>
+              {(update_orders, { loading: playerLoading, error: playerError, data: playerData }) => {
+                if (playerError) {
+                  return <ErrorBox error={playerError} />
+                }
+
+                if (playerLoading) {
+                  return <LoadingBox/>
+                }
+
+                if (!playerData) {
+                  return <DoValid getVideoSource={update_orders} orderNumber={orderNumber} neverUsed={neverUsed} />
+                }
+
+                if (!playerData!.update_orders!.returning.length) {
+                  return <EmptyBox/>
+                }
+
+                const {
+                  last_used_at,
+                  video: { id, source_url }
+                } = playerData!.update_orders!.returning[0]
+
+                return (
+                  <BrowseVideoMutation mutation={browseVideoMutation}>
+                    {(update_videos, { loading, error, data }) => {
+                      if (error) {
+                        return <ErrorBox error={error} />
+                      }
+
+                      if (loading) {
+                        return <LoadingBox/>
+                      }
+
+                      if (!data) {
+                        return <DoBrowse watch={update_videos} videoId={id}/>
+                      }
+
+                      const browsedVideo = data!.update_videos!.returning[0]
+
+                      return (
+                        <Player
+                          id={browsedVideo.id}
+                          title={browsedVideo.title}
+                          price={browsedVideo.price}
+                          thumbnail={browsedVideo.thumbnail}
+                          source={source_url}
                         />
-                      </FloatLayer>
-                    </NeedPayBlock>
-                  ) : (
-                    <>
-                      <Head>
-                        <title>{data!.update_videos!.returning[0].title}</title>
-                      </Head>
-                      <PlayVideoQuery query={playVideoQuery} variables={{ videoId }}>
-                        {({ loading: playerLoading, error: playerError, data: playerData }) => {
-                          if (playerLoading) {
-                            return null
-                          }
-                          if (playerError) {
-                            console.error(playerError)
-                            return (<div>Player Error!</div>)
-                          }
+                      )
+                    }}
+                  </BrowseVideoMutation>
+                )
+              }}
+            </PlayVideoMutation>
+          ) : (
+            <EmptyBox/>
+          )
+        }
+      </Section>
 
-                          return (
-                            // @ts-ignore
-                            <Video autoPlay={false} controls={"below"}>
-                              {/* <CirclePlay size="xlarge" color="white" /> */}
-                              <source key="video" src={playerData!.videos[0].source_url!} type="video/mp4" />
-                            </Video>
-                          )
-                        }}
-                      </PlayVideoQuery>
-                    </>
-                  ) : null
-                }
-              </CallWatch>
-            )
-          }}
-          </BrowseVideoMutation>
-      </PlayerSection>
-
-      <ButtonSection background="white" pad="medium">
+      <Section background="white" pad="medium">
         <Button
-          primary
+          reverse
           label="返回"
           style={{ padding: "6px 24px", fontSize: '16px', borderRadius: "8px" }}
-          onClick={Router.back}
+          onClick={() => orderNumber ? Router.replace('/') : Router.back()}
         />
-      </ButtonSection>
+      </Section>
 
       <AdBox page="watch" position="底部" />
 
@@ -160,8 +250,8 @@ const Watch: NextFunctionComponent<Props> = ({ videoId, orderNumber }) => {
 }
 
 Watch.getInitialProps = ({ query }: NextContext) => {
-  const videoId = query.id ? parseInt(query.id.toString()) : 0
-  const orderNumber = query.ono ? query.ono.toString() : ''
+  const videoId = isNaN(Number(query.id)) ? null : Number(query.id)
+  const orderNumber = query.ono ? query.ono.toString() : null
   return { videoId, orderNumber }
 }
 

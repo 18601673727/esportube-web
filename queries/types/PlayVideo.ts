@@ -3,21 +3,41 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: PlayVideo
+// GraphQL mutation operation: PlayVideo
 // ====================================================
 
-export interface PlayVideo_videos {
+export interface PlayVideo_update_orders_returning_video {
   __typename: "videos";
-  source_url: string | null;
+  id: number;
+  source_url: string;
+}
+
+export interface PlayVideo_update_orders_returning {
+  __typename: "orders";
+  created_at: any;
+  last_used_at: any | null;
+  /**
+   * An object relationship
+   */
+  video: PlayVideo_update_orders_returning_video;
+}
+
+export interface PlayVideo_update_orders {
+  __typename: "orders_mutation_response";
+  /**
+   * data of the affected rows by the mutation
+   */
+  returning: PlayVideo_update_orders_returning[];
 }
 
 export interface PlayVideo {
   /**
-   * fetch data from the table: "videos"
+   * update data of the table: "orders"
    */
-  videos: PlayVideo_videos[];
+  update_orders: PlayVideo_update_orders | null;
 }
 
 export interface PlayVideoVariables {
-  videoId: number;
+  neverUsed: boolean;
+  orderNumber?: any | null;
 }

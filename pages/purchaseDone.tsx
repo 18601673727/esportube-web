@@ -1,18 +1,23 @@
 import React from 'react'
 import Head from 'next/head'
 import styled from 'styled-components'
-import Link from 'next/link'
+import Router from 'next/router'
 import { NextFunctionComponent, NextContext } from 'next'
 import { Button, Box } from 'grommet'
 import { FormNextLink } from 'grommet-icons'
-// import { Query } from 'react-apollo'
+import { WaveLoading } from 'styled-spinkit'
+import { useSession } from  'react-use-session'
+import { Mutation } from 'react-apollo'
 import FrontLayout from '../components/FrontLayout'
-// import videoQuery from '../queries/videoQuery'
-// import { Video, VideoVariables } from '../queries/types/Video'
+import afterPayMutation from '../queries/afterPayMutation'
+import { consumeOrder, consumeOrderVariables } from '../queries/types/consumeOrder'
 
 interface Props {
-  orderNumber: string;
+  id: string | null;
+  payno: string | null;
 }
+
+class AfterPayMutation extends Mutation<consumeOrder, consumeOrderVariables> {}
 
 const Wrapper = styled(Box)`
   display: flex;
@@ -55,33 +60,77 @@ const Wrapper = styled(Box)`
   }
 `
 
-// class VideoQuery extends Query<Video, VideoVariables> {}
+const PurchaseDone: NextFunctionComponent<Props> = ({ id, payno }) => {
+  if (!id || !payno) {
+    return null
+  }
 
-const PurchaseDone: NextFunctionComponent<Props> = ({ orderNumber }) => {
+  let backButton: any = null
+
+  setTimeout(() => {
+    backButton ? backButton.click() : null
+  }, 4000)
+
   return (
     <FrontLayout>
-      <>
-        <Head>
-          <title>支付页</title>
-        </Head>
-        <Wrapper>
-          <section>
-            <h3>恭喜，<br/>支付成功！</h3>
-            <p>
-              <Link href={`/watch?ono=${orderNumber}`}>
-                <Button plain>请点击此处返回视频 <FormNextLink color="var(--dark-1)" /></Button>
-              </Link>
-            </p>
-          </section>
-        </Wrapper>
-      </>
+      <Head>
+        <title>支付页</title>
+      </Head>
+      <AfterPayMutation mutation={afterPayMutation}>
+        {(update_orders, { loading, error, data }) => {
+          if (error) {
+            console.error(error)
+            return (<div>Error!</div>)
+          }
+          if (loading) {
+            return (
+              <Box style={{ margin: 'auto' }}>
+                <WaveLoading color="var(--brand)"/>
+              </Box>
+            )
+          }
+          if (!data) {
+            update_orders({variables: { id }})
+          } else {
+            const order = data.update_orders!.returning[0]
+
+            if (order.payment!.type === '包月') {
+              const { save } = useSession('esportube-m', false)
+              save('e8125463314348b1a6a02a77ba63134b')
+            } else {
+              const { save } = useSession('esportube-s', false)
+              save(order.video!.source_url)
+            }
+
+            return (
+              <Wrapper>
+                <section>
+                  <h3>恭喜，<br/>支付成功！</h3>
+                  <p>
+                    <Button
+                      plain
+                      ref={(btn: any) => backButton = btn}
+                      onClick={() => Router.replace(`/watch?id=${order.video!.id}`)}
+                    >
+                      3秒后自动跳转，或立即点击返回 <FormNextLink color="var(--dark-1)" />
+                    </Button>
+                  </p>
+                </section>
+              </Wrapper>
+            )
+          }
+        }}
+      </AfterPayMutation>
     </FrontLayout>
   )
 }
 
 PurchaseDone.getInitialProps = ({ query }: NextContext) => {
-  const { sdorderno } = query
-  return { orderNumber: sdorderno!.toString() }
+  const { sdorderno, sdpayno } = query
+  return {
+    id: sdorderno ? sdorderno.toString() : null,
+    payno: sdpayno ? sdpayno.toString() : null,
+  }
 }
 
 export default PurchaseDone

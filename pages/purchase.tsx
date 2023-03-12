@@ -2,7 +2,6 @@ import React from 'react'
 import Head from 'next/head'
 import styled from 'styled-components'
 import Router from 'next/router'
-import useWindowSize from 'react-use/lib/useWindowSize'
 import { NextFunctionComponent, NextContext } from 'next'
 import { Button, Box } from 'grommet'
 import { Query, Mutation } from 'react-apollo'
@@ -27,21 +26,21 @@ const ButtonSection = styled(Box)`
 const PaymentTitle = styled.h3`
   display: block;
   margin: 0 auto;
-  padding: 30px 0 15px;
+  padding: 110px 0 100px;
   text-align: center;
   font-weight: 400;
 `
 
 const PaymentBox = styled(Box)`
-  padding: 14px;
+  padding: 14px 14px 4px;
+  background: #fff;
 
-  .qrcode {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
+  Button {
     color: #fff;
+    padding: 13px 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-radius: 8px;
     background-color: var(--status-ok);
   }
 `
@@ -50,8 +49,6 @@ class VideoQuery extends Query<Video, VideoVariables> {}
 class NewOrderMutation extends Mutation<NewOrder, NewOrderVariables> {}
 
 const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
-  const { width } = useWindowSize()
-
   return (
     <FrontLayout>
       <VideoQuery query={videoQuery} variables={{ videoId }}>
@@ -72,7 +69,7 @@ const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
             <NewOrderMutation mutation={newOrderMutation}>
               {(insert_orders, { data: orderData, loading: orderLoading, error: orderError }) => {
                 if (orderLoading) {
-                  return <PaymentBox style={{ height: width }}><div className="qrcode">正在跳转...</div></PaymentBox>
+                  return null
                 }
                 if (orderError) {
                   console.error(error)
@@ -89,20 +86,36 @@ const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
                       <title>{data!.videos_by_pk!.title}</title>
                     </Head>
                     <PaymentTitle>需您支付{amount}元</PaymentTitle>
-                    <PaymentBox style={{ height: width }}>
-                      <div className="qrcode">
-                        <Button
-                          plain
-                          label="立即支付"
-                          color="white"
-                          onClick={() => insert_orders({ variables: { videoId, type, amount } })}
-                        />
-                      </div>
+                    <PaymentBox>
+                      <Button
+                        fill
+                        label="微信扫码支付"
+                        color="status-ok"
+                        onClick={() => insert_orders({ variables: { videoId, type, amount } })}
+                      />
+                      <Button
+                        fill
+                        disabled
+                        label="敬请开放"
+                        color="status-ok"
+                      />
+                      <Button
+                        fill
+                        disabled
+                        label="敬请开放"
+                        color="status-ok"
+                      />
+                      <Button
+                        fill
+                        disabled
+                        label="敬请开放"
+                        color="status-ok"
+                      />
                     </PaymentBox>
                     <ButtonSection background="white" pad="medium">
                       <Button
-                        primary
-                        label="返回列表"
+                        reverse
+                        label="返回"
                         style={{ padding: "6px 24px", fontSize: '16px', borderRadius: "8px" }}
                         onClick={Router.back}
                       />
@@ -132,8 +145,8 @@ const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
                   query: { videoId, type: '包月' },
                 })}/>
                 <Button
-                  primary
-                  label="返回列表"
+                  reverse
+                  label="返回"
                   style={{ padding: "6px 24px", fontSize: '16px', borderRadius: "8px" }}
                   onClick={Router.back}
                 />

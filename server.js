@@ -93,7 +93,7 @@ const errorHandler = ex => {
 
       if (status === '1' && req.query.sign === sign) {
         actualPage = '/purchaseDone'
-        queryParams = { ...req.query }
+        queryParams = { sdpayno, sdorderno }
       }
 
       app.render(req, res, actualPage, queryParams);

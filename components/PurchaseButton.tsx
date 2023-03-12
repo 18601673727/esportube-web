@@ -20,8 +20,8 @@ const Wrapper = styled.div`
     user-select: none;
     position: absolute;
     left: 50px;
-    top: calc(50% - 19px);
-    font-size: 36px;
+    top: calc(50% - 17px);
+    font-size: 32px;
     font-weight: 400;
     color: #fff;
   }
@@ -30,10 +30,10 @@ const Wrapper = styled.div`
     user-select: none;
     position: absolute;
     right: 40px;
-    top: calc(50% - 24px);
+    top: calc(50% - 22px);
     color: ${(props) => props.title === '单次' ? 'blue' : 'red'};
-    font-size: 24px;
-    padding: 7px 24px;
+    font-size: 22px;
+    padding: 6px 24px;
     background: #fff;
     border-radius: 18px;
   }

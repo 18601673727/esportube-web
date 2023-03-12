@@ -50,6 +50,20 @@ const GlobalStyle = createGlobalStyle`
   img {
     border-radius: 8px;
   }
+
+  .Toaster__manager-top {
+    top: 44px!important;
+  }
+
+  .Toaster__alert_close {
+    display: none;
+  }
+
+  .Toaster__alert {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-right: 1rem;
+  }
 `
 
 declare let window: any;
@@ -60,17 +74,19 @@ if (typeof window !== 'undefined') {
 
   if (!window.toastInterval) {
     window.toastInterval = setInterval(() => {
-      toaster.notify(
-        `${PUSH_NICENAMES[getRandomName(0, PUSH_NICENAMES.length)]}***刚刚打赏了${getRandomMoney(2.00, 9.99)}元`,
-        { duration: 2000 }
-      )
+      toaster.notify((
+        <div>
+          <span>{PUSH_NICENAMES[getRandomName(0, PUSH_NICENAMES.length)]}***刚刚打赏了{getRandomMoney(2.00, 9.99)}元</span>
+        </div>
+      ), { duration: 2000 })
     }, 5000)
   }
 
-  toaster.notify(
-    `${PUSH_NICENAMES[getRandomName(0, PUSH_NICENAMES.length)]}***刚刚打赏了${getRandomMoney(2.00, 9.99)}元`,
-    { duration: 2000 }
-  )
+  toaster.notify((
+    <div>
+      <span>{PUSH_NICENAMES[getRandomName(0, PUSH_NICENAMES.length)]}***刚刚打赏了{getRandomMoney(2.00, 9.99)}元</span>
+    </div>
+  ), { duration: 2000 })
 }
 
 export default ({ children }: Props) => {
