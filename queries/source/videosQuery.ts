@@ -17,8 +17,8 @@ export default gql`
     ) {
       id
       title
-      price
-      viewer_count
+      single_play_cost
+      view_count
       thumbnail
     }
   }

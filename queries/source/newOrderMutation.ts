@@ -1,16 +1,17 @@
 import gql from 'graphql-tag'
 
 export default gql`
-  mutation NewOrder($videoId: Int!, $type: String!, $amount: numeric!) {
+  mutation NewOrder($videoId: uuid!, $userId: uuid!, $isSub: Boolean!, $amount: money!) {
     insert_orders(
       objects: {
         payment: {
           data: {
-            type: $type,
             amount: $amount
           }
         },
-        video_id: $videoId
+        is_sub: $isSub,
+        video_id: $videoId,
+        user_id: $userId
       }
     ) {
       returning {
