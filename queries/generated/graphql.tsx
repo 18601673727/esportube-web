@@ -3375,7 +3375,7 @@ export type VideoSourceQueryVariables = Exact<{
 export type VideoSourceQuery = { __typename?: 'query_root', videos_by_pk?: { __typename?: 'videos', source_url: string } | null };
 
 export type VideosQueryVariables = Exact<{
-  categoryId?: InputMaybe<Scalars['Int']>;
+  filter: Videos_Bool_Exp;
   offset: Scalars['Int'];
   limit: Scalars['Int'];
 }>;
@@ -3703,18 +3703,13 @@ export type VideoSourceQueryHookResult = ReturnType<typeof useVideoSourceQuery>;
 export type VideoSourceLazyQueryHookResult = ReturnType<typeof useVideoSourceLazyQuery>;
 export type VideoSourceQueryResult = Apollo.QueryResult<VideoSourceQuery, VideoSourceQueryVariables>;
 export const VideosDocument = gql`
-    query Videos($categoryId: Int, $offset: Int!, $limit: Int!) {
-  videos_aggregate(where: {category_id: {_eq: $categoryId}}) {
+    query Videos($filter: videos_bool_exp!, $offset: Int!, $limit: Int!) {
+  videos_aggregate(where: $filter) {
     aggregate {
       count
     }
   }
-  videos(
-    where: {category_id: {_eq: $categoryId}}
-    order_by: {id: desc}
-    offset: $offset
-    limit: $limit
-  ) {
+  videos(where: $filter, order_by: {id: desc}, offset: $offset, limit: $limit) {
     id
     title
     single_play_cost
@@ -3736,7 +3731,7 @@ export const VideosDocument = gql`
  * @example
  * const { data, loading, error } = useVideosQuery({
  *   variables: {
- *      categoryId: // value for 'categoryId'
+ *      filter: // value for 'filter'
  *      offset: // value for 'offset'
  *      limit: // value for 'limit'
  *   },

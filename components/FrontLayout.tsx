@@ -1,39 +1,39 @@
-import 'isomorphic-fetch'
 import React from 'react'
-import Router from 'next/router'
-import ApolloClient from 'apollo-client'
-import toaster from 'toasted-notes'
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import { HttpLink } from 'apollo-link-http'
-import { ApolloProvider } from 'react-apollo'
+import { ApolloProvider, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
 import { createGlobalStyle } from 'styled-components'
 import { Grommet } from 'grommet'
-import { PUSH_NICENAMES } from '../contants'
-
-const baseCSS = require('sanitize.css')
-const toastCSS = require('toasted-notes/src/styles.css')
 
 interface Props {
   children?: React.ReactNode
 }
 
-const createApolloClient = () => {
-  return new ApolloClient({
-    link: new HttpLink({
-      uri: 'https://esportube.herokuapp.com/v1/graphql',
-      headers: {'x-hasura-admin-secret': 'cb74937b1e6d11d58e0da6e84d0c304e'},
-    }),
-    cache: new InMemoryCache(),
-  })
-}
+let client: ApolloClient<any> | null = null;
 
-const client = createApolloClient()
+export const getClient = () => {
+  const uri = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
+  const secret = process.env.NEXT_PUBLIC_AUTH_TOKEN;
+
+  if (!uri || !secret) {
+    throw new Error('Graphql Client does not being properly setup!');
+  }
+
+  if (!client || typeof window === "undefined") {
+    client = new ApolloClient({
+      link: new HttpLink({
+        uri,
+        headers: { 'x-hasura-admin-secret': secret },
+      }),
+      cache: new InMemoryCache(),
+    });
+  }
+
+  return client;
+}
 
 const theme = {}
 
 const GlobalStyle = createGlobalStyle`
-  ${baseCSS}
-  ${toastCSS}
+  ${require('sanitize.css')}
 
   ::-webkit-scrollbar {
     display: none;
@@ -51,52 +51,13 @@ const GlobalStyle = createGlobalStyle`
   img {
     border-radius: 8px;
   }
-
-  .Toaster__manager-top {
-    top: 44px!important;
-  }
-
-  .Toaster__alert_close {
-    display: none;
-  }
-
-  .Toaster__alert {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-right: 1rem;
-  }
 `
 
-declare let window: any;
-
-if (typeof window !== 'undefined') {
-  const getRandomName = (min: number, max: number) => Math.round(Math.random() * (max - min + 1) + min)
-  const getRandomMoney = (min: number, max: number) => (Math.random() * (max - min) + min).toFixed(2)
-
-  if (!window.toastInterval) {
-    window.toastInterval = setInterval(() => {
-      toaster.notify((
-        <div>
-          <span>{PUSH_NICENAMES[getRandomName(0, PUSH_NICENAMES.length)]}***刚刚打赏了{getRandomMoney(2.00, 9.99)}元</span>
-        </div>
-      ), { duration: 2000 })
-    }, 5000)
-  }
-
-  toaster.notify((
-    <div>
-      <span>{PUSH_NICENAMES[getRandomName(0, PUSH_NICENAMES.length)]}***刚刚打赏了{getRandomMoney(2.00, 9.99)}元</span>
-    </div>
-  ), { duration: 2000 })
-}
-
-export default ({ children }: Props) => {
-  return (
-    <ApolloProvider client={client}>
-      <GlobalStyle/>
-      <Grommet cssVars theme={theme}>
-        {children}
-      </Grommet>
-    </ApolloProvider>
-  )
-}
+export default ({ children }: Props) => (
+  <ApolloProvider client={getClient()}>
+    <GlobalStyle />
+    <Grommet cssVars theme={theme}>
+      {children}
+    </Grommet>
+  </ApolloProvider>
+)

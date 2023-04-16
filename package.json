@@ -2,11 +2,11 @@
   "name": "esportube-web",
   "version": "1.9.0-wip",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "next dev",
     "build": "next build",
-    "now-build": "next build",
+    "start": "next start",
+    "lint": "next lint",
     "export": "npm run build && next export",
-    "start": "NODE_ENV=production node server.js",
     "gqgen": "graphql-codegen --config codegen.js"
   },
   "dependencies": {
@@ -15,7 +15,6 @@
     "@types/react": "^18.0.35",
     "@types/styled-components": "^5.1.26",
     "@zeit/next-css": "^1.0.1",
-    "dotenv": "16.0.3",
     "express": "^4.18.2",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",

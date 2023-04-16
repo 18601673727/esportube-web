@@ -1,16 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Query } from 'react-apollo'
 import { Button, Box } from 'grommet'
-import { WaveLoading } from 'styled-spinkit'
-import { Categories } from '../queries/types/Categories'
-import categoriesQuery from '../queries/categoriesQuery'
-import useIndexPageContext from '../contexts/indexPage'
+import { ScaleLoader } from 'react-spinners'
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/router'
+import { useCategoriesQuery } from '../queries/generated/graphql'
 import AdBox from './AdBox'
-
-interface Props {
-  onClick: (route: object) => void;
-}
 
 const CategoryBar = styled(Box)`
   flex-direction: row;
@@ -39,54 +34,50 @@ const CategoryButton = styled(Button)`
   }
 `;
 
-class CategoriesQuery extends Query<Categories> {}
+export default () => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const categoryId = searchParams.has('categoryId') ?? isNaN(Number(searchParams.get('categoryId'))) ? null : Number(searchParams.get('categoryId'))
+  const { data, loading, error } = useCategoriesQuery({})
 
-export default (props: Props) => {
-  const { category } = useIndexPageContext()
-  const { onClick } = props
+  if (error) {
+    console.error(error)
+    return (<div>Error!</div>)
+  }
+
+  if (loading) {
+    return (
+      <Box style={{ margin: 'auto' }}>
+        <ScaleLoader color="var(--brand)" />
+      </Box>
+    )
+  }
+
+  if (!data) {
+    throw new Error("Connection okay but no `data` field?")
+  }
+
+  const categories = [{
+    id: 0,
+    name: 'all',
+    chinese_name: '全部',
+  }, ...data.categories]
+
   return (
     <Box gridArea="header" background="white">
-      <CategoriesQuery query={categoriesQuery}>
-        {({ loading, error, data }) => {
-          if (loading) {
-            return (
-              <Box style={{ margin: 'auto' }}>
-                <WaveLoading color="var(--brand)"/>
-              </Box>
-            )
-          }
-          if (error) {
-            console.error(error)
-            return (<div>Error!</div>)
-          }
-
-          const categories = [{
-            id: 0,
-            name: 'all',
-            chinese_name: '全部',
-          }, ...data!.categories]
-
-          return (
-            <>
-              <CategoryBar>
-                {
-                  categories.map((item, _key) => (
-                    <CategoryButton
-                      primary={item.id === category}
-                      key={_key}
-                      label={item.chinese_name}
-                      onClick={() => onClick({
-                        pathname: `/category/${item.id}/page/1`
-                      })}
-                    />
-                  ))
-                }
-              </CategoryBar>
-              <AdBox page="index" position="顶部" />
-            </>
-          )
-        }}
-      </CategoriesQuery>
+      <CategoryBar>
+        {
+          categories.map((item, key) => (
+            <CategoryButton
+              primary={item.id === categoryId}
+              key={key}
+              label={item.chinese_name}
+              onClick={() => router.push(`?categoryId=${item.id}&page=1`)}
+            />
+          ))
+        }
+      </CategoryBar>
+      <AdBox page="index" position="顶部" />
     </Box>
   )
 }

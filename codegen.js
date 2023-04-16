@@ -3,10 +3,10 @@ require('dotenv').config();
 module.exports = {
     schema: [
         {
-            [process.env.GRAPHQL_ENDPOINT]: {
+            [process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT]: {
                 headers: {
                     "content-type": "application/json",
-                    "x-hasura-admin-secret": process.env.AUTH_TOKEN,
+                    "x-hasura-admin-secret": process.env.NEXT_PUBLIC_AUTH_TOKEN,
                 },
             },
         },

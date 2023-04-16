@@ -1,15 +1,12 @@
-const withTypescript = require('@zeit/next-typescript')
-const withProgressBar = require('next-progressbar')
-const withCSS = require('@zeit/next-css')
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    appDir: true,
+  },
+  reactStrictMode: true,
+  compiler: {
+    styledComponents: true,
+  },
+}
 
-module.exports = withProgressBar(
-  withCSS(
-    withTypescript({
-      // target: 'serverless',
-      useFileSystemPublicRoutes: false,
-      progressBar: {
-        profile: true,
-      },
-    })
-  )
-)
+module.exports = nextConfig
