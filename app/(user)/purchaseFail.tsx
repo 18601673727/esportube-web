@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import FrontLayout from '../components/FrontLayout'
+import FrontLayout from '@/components/FrontLayout'
 
 const Wrapper = styled.div`
   display: flex;

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Image } from 'grommet'
-import { DANCI_IMAGE, BAOYUE_IMAGE } from '../contants'
+import { DANCI_IMAGE, BAOYUE_IMAGE } from '@/contants'
 
 interface Props {
   title: '单次' | '包月';
@@ -42,7 +42,7 @@ const Wrapper = styled.div`
 export default (props: Props) => {
   return (
     <Wrapper title={props.title} onClick={props.onClick}>
-      <Image src={props.title === '单次' ? DANCI_IMAGE : BAOYUE_IMAGE}/>
+      <Image src={props.title === '单次' ? DANCI_IMAGE : BAOYUE_IMAGE} />
       <strong>{props.title}播放</strong>
       <span>购买</span>
     </Wrapper>

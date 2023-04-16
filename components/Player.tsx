@@ -4,13 +4,13 @@ import styled from 'styled-components'
 import useWindowSize from 'react-use/lib/useWindowSize'
 import { Box, Video, Image } from 'grommet'
 import { Lock } from 'grommet-icons'
-import GoPurchaseButton from '../components/GoPurchaseButton'
-import { DUMMY_IMAGE } from '../contants'
+import GoPurchaseButton from '@/components/GoPurchaseButton'
+import { DUMMY_IMAGE } from '@/contants'
 
 interface Props {
-  id: number;
+  id: string;
   title: string;
-  price: number;
+  single_play_cost: number;
   source: string | null;
   thumbnail: any | null;
 }
@@ -34,7 +34,7 @@ const NeedPayBlock = styled(Box)`
 `
 
 export default (props: Props) => {
-  const { id, title, price, thumbnail, source } = props
+  const { id, title, single_play_cost, thumbnail, source } = props
   const { width } = useWindowSize()
 
   return (
@@ -54,12 +54,12 @@ export default (props: Props) => {
           </Video>
         ) : (
           <NeedPayBlock style={{ height: width }}>
-            <Image fit="contain" src={thumbnail ? thumbnail.src : DUMMY_IMAGE}/>
+            <Image fit="contain" src={thumbnail ? thumbnail.src : DUMMY_IMAGE} />
             <div className="float-layer">
               <Lock size="xlarge" color="white" />
               <GoPurchaseButton
                 videoId={id}
-                amount={price}
+                amount={single_play_cost}
               />
             </div>
           </NeedPayBlock>

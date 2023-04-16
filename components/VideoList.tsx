@@ -1,20 +1,17 @@
+"use client";
+
 import React from 'react'
 import styled from 'styled-components'
 import Link from 'next/link'
-import { Query } from 'react-apollo'
+import AdBox from '@/components/AdBox'
+import VideoListHeader from '@/components/VideoListHeader'
+import VideoListPaginator from '@/components/VideoListPaginator'
+import { useSearchParams } from 'next/navigation'
 import { Image, Box } from 'grommet'
 import { Group } from 'grommet-icons'
-import { WaveLoading } from 'styled-spinkit'
-import useIndexPageContext from '../contexts/indexPage'
-import AdBox from './AdBox'
-import FrontPaginator from './FrontPaginator'
-import videosQuery from '../queries/videosQuery'
-import { Videos, VideosVariables } from '../queries/types/Videos'
-import { DUMMY_IMAGE } from '../contants'
-
-interface Props {
-  onPaginationClick: (_: any) => void;
-}
+import { ScaleLoader } from 'react-spinners'
+import { useVideosQuery, Videos_Bool_Exp } from '@/queries/generated/graphql'
+import { DUMMY_IMAGE } from '@/contants'
 
 const FloatTitle = styled.div`
   display: flex;
@@ -47,10 +44,6 @@ const VideoThumbnail = styled(Image)`
   user-select: none;
 `
 
-const VideoList = styled(Box)`
-  margin-top: 14px;
-`;
-
 const VideoListItem = styled(Box)`
   position: relative;
   margin: 6px 0;
@@ -68,77 +61,78 @@ const VideoListItem = styled(Box)`
   }
 `;
 
-class VideosQuery extends Query<Videos, VideosVariables> {}
-
-export default (props: Props) => {
-  const { category, page } = useIndexPageContext()
-  const { onPaginationClick } = props
-
+export default () => {
+  const searchParams = useSearchParams()
+  const categoryId = searchParams.has('categoryId') ?? isNaN(Number(searchParams.get('categoryId'))) ? null : Number(searchParams.get('categoryId'))
+  const page = searchParams.has('page') ?? isNaN(Number(searchParams.get('page'))) ? 1 : Number(searchParams.get('page'))
   const limit = 9
-  const offset = page * limit - limit
+  const offset = page * limit
+  const filter: Videos_Bool_Exp = { category_id: {} };
+
+  if (categoryId) {
+    filter.category_id = { _eq: categoryId };
+  }
+
+  const { data, loading, error } = useVideosQuery({
+    variables: { filter, offset, limit },
+  })
+
+  if (error) {
+    console.error(error)
+    return (<div>Error!</div>)
+  }
+
+  if (loading) {
+    return (
+      <Box style={{ margin: 'auto' }}>
+        <ScaleLoader color="var(--brand)" />
+      </Box>
+    )
+  }
+
+  if (!data) {
+    throw new Error("Connection okay but no `data` field?")
+  }
 
   return (
     <Box gridArea="main" background="light-2">
-      <VideosQuery
-        query={videosQuery}
-        variables={{
-          limit,
-          offset,
-          categoryId: category ? category : null
-        }}
-      >
-        {({ loading, error, data }) => {
-          if (loading) {
-            return (
-              <Box style={{ margin: 'auto' }}>
-                <WaveLoading color="var(--brand)"/>
-              </Box>
-            )
-          }
-          if (error) {
-            console.error(error)
-            return (<div>Error!</div>)
-          }
+      <VideoListHeader />
+      {
+        data.videos.map((video, key) => (
+          <React.Fragment key={key}>
+            <Link href={`/watch?id=${video.id}`}>
+              <VideoListItem
+                fill="horizontal"
+                height="small"
+                background="white"
+                pad="medium"
+              >
+                <VideoThumbnail fit="cover" src={video.thumbnail ? video.thumbnail : DUMMY_IMAGE} />
+                <FloatTitle>
+                  <h3>{video.title}</h3>
+                  <Group size="16px" color="accent-3" />
+                  <h4>{video.view_count}人</h4>
+                </FloatTitle>
+              </VideoListItem>
+            </Link>
 
-          return (
-            <VideoList>
-              {
-                data!.videos.map((video, key) => {
-                  return (
-                    <React.Fragment key={key}>
-                      <Link href={`/watch?id=${video.id}`}>
-                        <VideoListItem
-                          fill="horizontal"
-                          height="small"
-                          background="white"
-                          pad="medium"
-                        >
-                          <VideoThumbnail fit="cover" src={video.thumbnail ? video.thumbnail.src : DUMMY_IMAGE}/>
-                          <FloatTitle>
-                            <h3>{video.title}</h3>
-                            <Group size="16px" color="accent-3"/>
-                            <h4>{video.viewer_count}人</h4>
-                          </FloatTitle>
-                        </VideoListItem>
-                      </Link>
+            <AdBox page="index" position="中部" index={key + 1} />
+          </React.Fragment>
+        ))
+      }
 
-                      <AdBox page="index" position="中部" index={key + 1}/>
-                    </React.Fragment>
-                  )
-                })
-              }
+      {
+        data.videos.length ? (
+          <VideoListPaginator
+            total={data.videos_aggregate!.aggregate!.count!}
+            page={page}
+            perPage={limit}
+            categoryId={categoryId}
+          />
+        ) : null
+      }
 
-              <FrontPaginator
-                total={data!.videos_aggregate!.aggregate!.count!}
-                page={page}
-                perPage={limit}
-                categoryId={category}
-                onChange={onPaginationClick}
-              />
-            </VideoList>
-          )
-        }}
-      </VideosQuery>
+      <AdBox page="index" position="底部" />
     </Box>
   )
 }

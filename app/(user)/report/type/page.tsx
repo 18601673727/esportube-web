@@ -1,7 +1,8 @@
+"use client";
+
 import Link from 'next/link'
 import styled from 'styled-components'
-import FrontLayout from '../components/FrontLayout'
-import ReportList from '../components/ReportList'
+import ReportList from '@/components/ReportList'
 
 const pageData = {
   title: '请选择投诉的原因：',
@@ -62,16 +63,14 @@ const Footer = styled.footer`
 
 export default () => {
   return (
-    <FrontLayout>
-      <Wrapper>
-        <p>{pageData.title}</p>
-        <ReportList data={pageData.list} />
-        <Footer>
-          <Link href="/reportInfo">
-            <a>投诉须知</a>
-          </Link>
-        </Footer>
-      </Wrapper>
-    </FrontLayout>
+    <Wrapper>
+      <p>{pageData.title}</p>
+      <ReportList data={pageData.list} />
+      <Footer>
+        <Link href="/report/info">
+          投诉须知
+        </Link>
+      </Footer>
+    </Wrapper>
   );
 }

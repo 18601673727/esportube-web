@@ -1,10 +1,11 @@
+"use client";
+
 import React from 'react'
 import styled from 'styled-components'
+import Link from 'next/link';
 import { Button, Box } from 'grommet'
-import { ScaleLoader } from 'react-spinners'
 import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/router'
-import { useCategoriesQuery } from '../queries/generated/graphql'
+import { useCategoriesQuery } from '@/queries/generated/graphql'
 import AdBox from './AdBox'
 
 const CategoryBar = styled(Box)`
@@ -15,11 +16,14 @@ const CategoryBar = styled(Box)`
   ::-webkit-scrollbar {
     display: none;
   }
+
+  & > a {
+    margin: 0 4px;
+  }
 `;
 
 const CategoryButton = styled(Button)`
   white-space: pre;
-  margin: 0 6px;
   font-size: 14px;
   font-weight: 900;
   padding: 0px 22px;
@@ -35,9 +39,8 @@ const CategoryButton = styled(Button)`
 `;
 
 export default () => {
-  const router = useRouter()
   const searchParams = useSearchParams()
-  const categoryId = searchParams.has('categoryId') ?? isNaN(Number(searchParams.get('categoryId'))) ? null : Number(searchParams.get('categoryId'))
+  const categoryId = searchParams.has('categoryId') ? parseInt(searchParams.get('categoryId')!) : 0;
   const { data, loading, error } = useCategoriesQuery({})
 
   if (error) {
@@ -46,11 +49,7 @@ export default () => {
   }
 
   if (loading) {
-    return (
-      <Box style={{ margin: 'auto' }}>
-        <ScaleLoader color="var(--brand)" />
-      </Box>
-    )
+    return null
   }
 
   if (!data) {
@@ -68,12 +67,9 @@ export default () => {
       <CategoryBar>
         {
           categories.map((item, key) => (
-            <CategoryButton
-              primary={item.id === categoryId}
-              key={key}
-              label={item.chinese_name}
-              onClick={() => router.push(`?categoryId=${item.id}&page=1`)}
-            />
+            <Link key={key} href={`?categoryId=${item.id}&page=1`} replace scroll={false}>
+              <CategoryButton primary={item.id === categoryId} label={item.chinese_name} />
+            </Link>
           ))
         }
       </CategoryBar>

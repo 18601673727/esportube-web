@@ -1,6 +1,8 @@
+"use client";
+
 import React from 'react'
 import styled from 'styled-components'
-import Router from 'next/router'
+import Link from 'next/link'
 import { Box, Button } from 'grommet'
 
 const ReportBox = styled(Box)`
@@ -17,15 +19,12 @@ const ReportBox = styled(Box)`
 `
 
 export default () => (
-  <ReportBox background="white" pad="medium">
-    <Button
-      primary
-      label="投诉"
-      onClick={() => {
-        Router.push({
-          pathname: '/reportType',
-        })
-      }}
-    />
-  </ReportBox>
+  <Link href='/report/type'>
+    <ReportBox background="white" pad="medium">
+      <Button
+        primary
+        label="微信登录"
+      />
+    </ReportBox>
+  </Link>
 )

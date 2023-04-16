@@ -1,11 +1,9 @@
 import styled from 'styled-components'
 import Link from 'next/link'
-import { WaveLoading } from 'styled-spinkit'
+import { ScaleLoader } from 'react-spinners'
 import { Box, Image } from 'grommet'
-import { Query } from 'react-apollo'
-import adsQuery from '../queries/adsQuery'
-import { Ads, AdsVariables, Ads_ads } from '../queries/types/Ads'
-import { DUMMY_AD } from '../contants';
+import { useAdsQuery, Ads } from '@/queries/generated/graphql'
+import { DUMMY_AD } from '@/contants';
 
 interface Props {
   position: string;
@@ -18,61 +16,47 @@ const Wrapper = styled(Box)`
   max-height: 100px;
 `;
 
-const WhiteSpace = styled.div`
-  background: #fff;
-  min-height: 50px;
-  max-height: 100px;
-`
+const renderAd = (ad: Ads) => {
+  const body = (
+    <Wrapper fill="horizontal" background="white" pad="medium">
+      <Image fit="cover" src={ad.thumbnail.length ? ad.thumbnail : DUMMY_AD} />
+    </Wrapper>
+  );
 
-class AdsQuery extends Query<Ads, AdsVariables> {}
-
-const renderAd = (ad: Ads_ads) => {
-  return (
-    <Link href={ad.link}>
-      <a target="_blank">
-        <Wrapper fill="horizontal" background="white" pad="medium">
-          <Image fit="cover" src={ad.thumbnail ? ad.thumbnail.src : DUMMY_AD} />
-        </Wrapper>
-      </a>
+  return ad.link ? (
+    <Link href={ad.link} target="_blank">
+      {body}
     </Link>
-  )
+  ) : body
 }
 
 export default (props: Props) => {
   const { position, page } = props
-  return (
-    <AdsQuery query={adsQuery} variables={{ position, page }}>
-      {({ loading, error, data }) => {
-        if (loading) {
-          return (
-            <Box style={{ margin: 'auto' }}>
-              <WaveLoading color="var(--brand)"/>
-            </Box>
-          )
-        }
-        if (error) {
-          console.error(error)
-          return (<div>Error!</div>)
-        }
 
-        if (position === '中部') {
-          if (!data!.ads.length || props.index! / 3 % 1 !== 0) {
-            return null
-          }
+  const { data, loading, error } = useAdsQuery({
+    variables: { position, page },
+  })
 
-          return renderAd(data!.ads[props.index! / 3 - 1])
-        }
+  if (error) {
+    console.error(error)
+    return (<div>Error!</div>)
+  }
 
-        if (!data!.ads.length) {
-          return (
-            <Wrapper fill="horizontal" background="white" pad="medium">
-              <WhiteSpace/>
-            </Wrapper>
-          )
-        }
+  if (loading) {
+    return (
+      <Box style={{ margin: 'auto' }}>
+        <ScaleLoader color="var(--brand)" />
+      </Box>
+    )
+  }
 
-        return renderAd(data!.ads[0])
-      }}
-    </AdsQuery>
-  )
+  if (!data) {
+    throw new Error("Connection okay but no `data` field?")
+  }
+
+  if (!data.ads.length) {
+    return null
+  }
+
+  return position === '中部' ? props.index! / 3 % 1 !== 0 ? null : renderAd(data.ads[props.index! / 3 - 1]) : renderAd(data.ads[0])
 }

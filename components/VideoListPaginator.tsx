@@ -1,14 +1,15 @@
+"use client";
+
 import React from 'react'
 import styled from 'styled-components'
+import { useRouter } from 'next/navigation'
 import { Button, Box } from 'grommet'
-import AdBox from './AdBox'
 
 interface Props {
   total: number;
   page: number;
   perPage: number;
-  categoryId: number;
-  onChange: (route: object) => void;
+  categoryId: number | null;
 }
 
 interface ButtonBoxProps {
@@ -33,20 +34,18 @@ const Wrapper = styled(Box)`
 `;
 
 export default (props: Props) => {
-  const { total, page, perPage, categoryId, onChange } = props
+  const router = useRouter()
+  const { total, page, perPage, categoryId } = props
 
   return (
     <Wrapper background="white">
-      <AdBox page="index" position="底部" />
       <ButtonBox page={page}>
         {
           page > 1 ? (
             <Button
               plain
               label="上一页"
-              onClick={() => onChange({
-                pathname: `/category/${categoryId}/page/${page - 1}`,
-              })}
+              onClick={() => router.push(categoryId ? `?categoryId=${categoryId}&page=${page - 1}` : `?page=${page - 1}`)}
             />
           ) : null
         }
@@ -55,9 +54,7 @@ export default (props: Props) => {
             <Button
               plain
               label="下一页"
-              onClick={() => onChange({
-                pathname: `/category/${categoryId}/page/${page + 1}`,
-              })}
+              onClick={() => router.push(categoryId ? `?categoryId=${categoryId}&page=${page + 1}` : `?page=${page + 1}`)}
             />
           ) : null
         }

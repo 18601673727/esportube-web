@@ -1,22 +1,20 @@
 import React from 'react'
 import Head from 'next/head'
 import styled from 'styled-components'
-import Router from 'next/router'
-import { NextFunctionComponent, NextContext } from 'next'
+import Router from 'next/navigation'
+import { NextPage, NextPageContext } from 'next'
 import { Button, Box } from 'grommet'
-import { Query, Mutation } from 'react-apollo'
-import FrontLayout from '../components/FrontLayout'
-import AdBox from '../components/AdBox'
-import PurchaseButton from '../components/PurchaseButton'
-import GoReportButton from '../components/GoReportButton'
-import videoQuery from '../queries/videoQuery'
-import newOrderMutation from '../queries/newOrderMutation'
-import { Video, VideoVariables } from '../queries/types/Video'
-import { NewOrder, NewOrderVariables } from '../queries/types/NewOrder';
+import AdBox from '@/components/AdBox'
+import PurchaseButton from '@/components/PurchaseButton'
+import GoReportButton from '@/components/GoReportButton'
+// import videoQuery from '@/queries/videoQuery'
+// import newOrderMutation from '@/queries/newOrderMutation'
+// import { Video, VideoVariables } from '@/queries/types/Video'
+// import { NewOrder, NewOrderVariables } from '@/queries/types/NewOrder'
 
 interface Props {
-  videoId: number;
-  type: string;
+  videoId: string;
+  isSub: boolean;
 }
 
 const ButtonSection = styled(Box)`
@@ -45,10 +43,10 @@ const PaymentBox = styled(Box)`
   }
 `
 
-class VideoQuery extends Query<Video, VideoVariables> {}
-class NewOrderMutation extends Mutation<NewOrder, NewOrderVariables> {}
+class VideoQuery extends Query<Video, VideoVariables> { }
+class NewOrderMutation extends Mutation<NewOrder, NewOrderVariables> { }
 
-const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
+const Purchase: NextPage<Props> = ({ videoId, isSub }) => {
   return (
     <FrontLayout>
       <VideoQuery query={videoQuery} variables={{ videoId }}>
@@ -62,8 +60,8 @@ const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
           }
 
           const singlePrice = data!.videos_by_pk!.price.toFixed(2)
-          const monthyPrice = Number(data!.configs_by_pk!.value).toFixed(2)
-          const amount = type === '单次' ? singlePrice : monthyPrice
+          const subPrice = Number(data!.configs_by_pk!.value).toFixed(2)
+          const amount = isSub ? subPrice : singlePrice
 
           return type.length ? (
             <NewOrderMutation mutation={newOrderMutation}>
@@ -91,7 +89,7 @@ const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
                         fill
                         label="微信扫码支付"
                         color="status-ok"
-                        onClick={() => insert_orders({ variables: { videoId, type, amount } })}
+                        onClick={() => insert_orders({ variables: { videoId, isSub, amount } })}
                       />
                       <Button
                         fill
@@ -123,7 +121,7 @@ const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
 
                     <AdBox page="purchase" position="底部" />
 
-                    <GoReportButton/>
+                    <GoReportButton />
                   </>
                 )
               }}
@@ -138,12 +136,12 @@ const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
               <ButtonSection background="white" pad="medium">
                 <PurchaseButton title="单次" onClick={() => Router.push({
                   pathname: '/purchase',
-                  query: { videoId, type: '单次' },
-                })}/>
+                  query: { videoId, isSub: false },
+                })} />
                 <PurchaseButton title="包月" onClick={() => Router.push({
                   pathname: '/purchase',
-                  query: { videoId, type: '包月' },
-                })}/>
+                  query: { videoId, isSub: true },
+                })} />
                 <Button
                   reverse
                   label="返回"
@@ -154,7 +152,7 @@ const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
 
               <AdBox page="purchase" position="底部" />
 
-              <GoReportButton/>
+              <GoReportButton />
             </>
           )
         }}
@@ -163,10 +161,10 @@ const Purchase: NextFunctionComponent<Props> = ({ videoId, type }) => {
   )
 }
 
-Purchase.getInitialProps = ({ query }: NextContext) => {
-  const type = query.type ? query.type.toString() : ''
-  const videoId = query.videoId ? parseInt(query.videoId.toString()) : 0
-  return { videoId, type }
+Purchase.getInitialProps = ({ query }: NextPageContext) => {
+  const isSub = query.isSub ? query.isSub : false
+  const videoId = query.videoId ? query.videoId : ''
+  return { videoId, isSub }
 }
 
 export default Purchase

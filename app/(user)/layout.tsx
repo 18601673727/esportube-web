@@ -1,10 +1,14 @@
+"use client";
+
 import React from 'react'
 import { ApolloProvider, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
 import { createGlobalStyle } from 'styled-components'
 import { Grommet } from 'grommet'
+import GoReportButton from '@/components/GoReportButton'
 
-interface Props {
-  children?: React.ReactNode
+export const metadata = {
+  title: 'Esportube',
+  description: 'Welcome to Esportube!',
 }
 
 let client: ApolloClient<any> | null = null;
@@ -39,7 +43,7 @@ const GlobalStyle = createGlobalStyle`
     display: none;
   }
 
-  html, body, #__next, #__next > div {
+  html, body, body > div {
     width: 100%;
     height: 100%;
   }
@@ -52,12 +56,22 @@ const GlobalStyle = createGlobalStyle`
     border-radius: 8px;
   }
 `
-
-export default ({ children }: Props) => (
-  <ApolloProvider client={getClient()}>
-    <GlobalStyle />
-    <Grommet cssVars theme={theme}>
-      {children}
-    </Grommet>
-  </ApolloProvider>
-)
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <ApolloProvider client={getClient()}>
+          <GlobalStyle />
+          <Grommet cssVars theme={theme}>
+            {children}
+            <GoReportButton />
+          </Grommet>
+        </ApolloProvider>
+      </body>
+    </html>
+  )
+}

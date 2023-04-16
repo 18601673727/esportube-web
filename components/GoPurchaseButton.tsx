@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { NextFunctionComponent } from 'next'
-import Router from 'next/router'
+import { NextPage } from 'next'
+import Router from 'next/navigation'
 
 interface Props {
-  videoId: number;
+  videoId: string;
   amount: number;
 }
 
@@ -29,7 +29,7 @@ const Wrapper = styled.button`
   }
 `
 
-const GoPurchaseButton: NextFunctionComponent<Props> = props => {
+const GoPurchaseButton: NextPage<Props> = props => {
   const { videoId, amount } = props
 
   return (

@@ -17,15 +17,22 @@ const Wrapper = styled.div`
   }
 
   li {
+    display: flex;
     user-select: none;
     cursor: pointer;
     display: flex;
     background: var(--white);
     padding: 10px 10px;
     border-bottom: 1px solid var(--light-3);
+    justify-content: space-between;
 
     :last-child {
       border-bottom: none;
+    }
+
+    a {
+      -webkit-appearance: none;
+      text-decoration: none;
     }
   }
 
@@ -45,13 +52,11 @@ export default (props: Props) => (
   <Wrapper>
     <ul>
       {
-        props.data!.map((item, _key) => (
-          <Link href={props.data.length > 1 ? '/report' : '/reportDone'} key={_key}>
-            <li>
-              <strong>{item.content}</strong>
-              <Next color="#B7B7B7" size="18px" style={{ marginTop: 3 }}/>
-            </li>
-          </Link>
+        props.data!.map((item, key) => (
+          <li key={key}>
+            <Link href={props.data.length > 1 ? '/report' : '/report/done'}>{item.content}</Link>
+            <Next color="#B7B7B7" size="18px" style={{ marginTop: 3 }} />
+          </li>
         ))
       }
     </ul>

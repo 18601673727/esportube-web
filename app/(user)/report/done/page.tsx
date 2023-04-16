@@ -1,6 +1,7 @@
+"use client";
+
 import styled from 'styled-components'
-import FrontLayout from '../components/FrontLayout'
-import { SUCCESS_ARROW } from '../contants'
+import { SUCCESS_ARROW } from '@/contants'
 
 const Wrapper = styled.div`
   display: flex;
@@ -8,7 +9,6 @@ const Wrapper = styled.div`
   height: 100%;
   background: var(--white);
   flex-direction: column;
-  padding: 20% 0 0;
   box-sizing: border-box;
 
   i {
@@ -43,13 +43,11 @@ const Wrapper = styled.div`
 `
 
 export default () => (
-  <FrontLayout>
-    <Wrapper>
-      <i className="wechat-success"/>
-      <strong>投诉已提交</strong>
-      <p>
-        <span>微信团队会核实，并通过“微信团队”通知您审核结果，感谢您的支持。</span>
-      </p>
-    </Wrapper>
-  </FrontLayout>
+  <Wrapper>
+    <i />
+    <strong>投诉已提交</strong>
+    <p>
+      <span>微信团队会核实，并通过“微信团队”通知您审核结果，感谢您的支持。</span>
+    </p>
+  </Wrapper>
 )

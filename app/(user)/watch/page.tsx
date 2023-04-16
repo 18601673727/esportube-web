@@ -1,31 +1,21 @@
 import React from 'react'
-import Router from 'next/router'
+import Router from 'next/navigation'
 import styled from 'styled-components'
-import NoSSR from 'react-no-ssr'
+import dynamic from 'next/dynamic'
 import useUnmount from 'react-use/lib/useUnmount'
-import { NextContext, NextFunctionComponent } from 'next'
+import { useSearchParams } from 'next/navigation'
 import { Button, Box } from 'grommet'
-import { WaveLoading } from 'styled-spinkit'
-import { Mutation, Query } from 'react-apollo'
-import { useSession } from  'react-use-session'
-import GoReportButton from '../components/GoReportButton'
-import FrontLayout from '../components/FrontLayout'
-import AdBox from '../components/AdBox'
-import Player from '../components/Player'
-import videoSourceQuery from '../queries/videoSourceQuery'
-import browseVideoMutation from '../queries/browseVideoMutation'
-import { VideoSource, VideoSourceVariables } from '../queries/types/VideoSource'
-import { BrowseVideo, BrowseVideoVariables } from '../queries/types/BrowseVideo'
-
-interface Props {
-  id: number | null;
-  goto: string | null;
-}
+import { ScaleLoader } from 'react-spinners'
+import { Query, Mutation } from '@apollo/client/react/components'
+import { useSessionStorage } from 'react-use'
+import GoReportButton from '@/components/GoReportButton'
+import AdBox from '@/components/AdBox'
+import Player from '@/components/Player'
 
 type SourceUrl = string | null;
 
 interface DoBrowseProps {
-  videoId: number;
+  videoId: string;
   watch: (params: object) => void;
 }
 
@@ -48,7 +38,7 @@ const Section = styled(Box)`
 
 const LoadingBox = () => (
   <Box style={{ margin: 'auto' }}>
-    <WaveLoading color="var(--brand)"/>
+    <ScaleLoader color="var(--brand)" />
   </Box>
 )
 
@@ -63,9 +53,6 @@ const EmptyBox = () => (
     <p style={{ textAlign: 'center', marginTop: '10px', fontWeight: 200 }}>The video you{"\'"}re looking for couldn{"\'"}t been found.</p>
   </>
 )
-
-class BrowseVideoMutation extends Mutation<BrowseVideo, BrowseVideoVariables> {}
-class VideoSourceQuery extends Query<VideoSource, VideoSourceVariables> {}
 
 class DoBrowse extends React.Component<DoBrowseProps> {
   componentDidMount() {
@@ -94,28 +81,32 @@ class DestoryToken extends React.Component<any> {
 }
 
 // TODO: base {last_used_at} baoyue => diffDays(created_at, last_used_at) < 30?
-const Watch: NextFunctionComponent<Props> = ({ id, goto }) => {
-  if (!id) {
-    return <EmptyBox/>
+const Watch = () => {
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
+  const goto = searchParams.get('goto')
+
+  if (!id || !id.length) {
+    return <EmptyBox />
   }
 
   let source: SourceUrl = null
 
-  const { session: mToken } = useSession('esportube-m', false)
-  const { session: sToken, clear: clearS } = useSession('esportube-s', false)
+  const [mToken] = useSessionStorage('esportube-m', '')
+  const [sToken, setSToken] = useSessionStorage('esportube-s', '')
   const subscribed = mToken === 'e8125463314348b1a6a02a77ba63134b'
 
-  useUnmount(clearS)
+  useUnmount(() => setSToken(''))
 
-  return (
-    <FrontLayout>
-      <NoSSR>
+  const NoSSR = () => {
+    return (
+      <>
         <AdBox page="watch" position="顶部" />
         {
           subscribed ? (
             <Section background="white">
               <div className="baoyue">
-              您正在使用<span className="strong">包月权益</span>免费观看
+                您正在使用<span className="strong">包月权益</span>免费观看
               </div>
             </Section>
           ) : null
@@ -129,11 +120,11 @@ const Watch: NextFunctionComponent<Props> = ({ id, goto }) => {
               }
 
               if (loading) {
-                return <LoadingBox/>
+                return <LoadingBox />
               }
 
               if (!data) {
-                return <DoBrowse watch={update_videos} videoId={id}/>
+                return <DoBrowse watch={update_videos} videoId={id} />
               }
 
               const browsedVideo = data!.update_videos!.returning[0]
@@ -142,7 +133,7 @@ const Watch: NextFunctionComponent<Props> = ({ id, goto }) => {
                 source = sToken.slice()
                 return (
                   <DestoryToken>
-                    <Player {...browsedVideo} source={source}/>
+                    <Player {...browsedVideo} source={source} />
                   </DestoryToken>
                 )
               }
@@ -150,24 +141,24 @@ const Watch: NextFunctionComponent<Props> = ({ id, goto }) => {
               if (subscribed || browsedVideo.price === 0) {
                 return (
                   <VideoSourceQuery query={videoSourceQuery} variables={{ videoId: id }}>
-                    {({loading: vLoading, error: vError, data: vData}) => {
+                    {({ loading: vLoading, error: vError, data: vData }) => {
                       if (vError) {
                         return <ErrorBox error={vError} />
                       }
 
                       if (vLoading || !vData) {
-                        return <LoadingBox/>
+                        return <LoadingBox />
                       }
 
                       source = vData.videos_by_pk!.source_url
 
-                      return <Player {...browsedVideo} source={source}/>
+                      return <Player {...browsedVideo} source={source} />
                     }}
                   </VideoSourceQuery>
                 )
               }
 
-              return <Player {...browsedVideo} source={source}/>
+              return <Player {...browsedVideo} source={source} />
             }}
           </BrowseVideoMutation>
         </Section>
@@ -181,16 +172,14 @@ const Watch: NextFunctionComponent<Props> = ({ id, goto }) => {
           />
         </Section>
         <AdBox page="watch" position="底部" />
-        <GoReportButton/>
-      </NoSSR>
-    </FrontLayout>
-  )
-}
+        <GoReportButton />
+      </>
+    );
+  };
 
-Watch.getInitialProps = ({ query }: NextContext) => {
-  const id = isNaN(Number(query.id)) ? null : Number(query.id)
-  const goto = query.goto ? query.goto.toString() : null
-  return { id, goto }
+  const NoSSRComponent = dynamic(async () => NoSSR, { ssr: false });
+
+  return <NoSSRComponent />
 }
 
 export default Watch

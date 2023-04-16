@@ -1,16 +1,16 @@
 import gql from 'graphql-tag'
 
 export default gql`
-  query Videos($categoryId: Int, $offset: Int!, $limit: Int!) {
+  query Videos($filter: videos_bool_exp!, $offset: Int!, $limit: Int!) {
     videos_aggregate(
-      where: { category_id: { _eq: $categoryId } }
+      where: $filter
     ) {
       aggregate {
         count
       }
     }
     videos(
-      where: { category_id: { _eq: $categoryId } },
+      where: $filter,
       order_by: { id: desc },
       offset: $offset,
       limit: $limit
