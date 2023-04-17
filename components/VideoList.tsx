@@ -63,10 +63,10 @@ const VideoListItem = styled(Box)`
 
 export default () => {
   const searchParams = useSearchParams()
-  const categoryId = searchParams.has('categoryId') ?? isNaN(Number(searchParams.get('categoryId'))) ? null : Number(searchParams.get('categoryId'))
-  const page = searchParams.has('page') ?? isNaN(Number(searchParams.get('page'))) ? 1 : Number(searchParams.get('page'))
+  const categoryId = searchParams.has('categoryId') ? Number(searchParams.get('categoryId')) : 0;
+  const page = searchParams.has('page') ? Number(searchParams.get('page')) : 1;
   const limit = 9
-  const offset = page * limit
+  const offset = (page - 1) * limit
   const filter: Videos_Bool_Exp = { category_id: {} };
 
   if (categoryId) {

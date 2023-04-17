@@ -10,6 +10,7 @@ const Wrapper = styled.div`
   background: var(--white);
   flex-direction: column;
   box-sizing: border-box;
+  padding-top: 20%;
 
   i {
     display: block;

@@ -1,6 +1,6 @@
 {
   "name": "esportube-web",
-  "version": "1.9.0-wip",
+  "version": "1.9.2-demo",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

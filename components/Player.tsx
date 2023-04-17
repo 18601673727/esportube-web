@@ -1,7 +1,4 @@
-import React from 'react'
-import Head from 'next/head'
 import styled from 'styled-components'
-import useWindowSize from 'react-use/lib/useWindowSize'
 import { Box, Video, Image } from 'grommet'
 import { Lock } from 'grommet-icons'
 import GoPurchaseButton from '@/components/GoPurchaseButton'
@@ -10,9 +7,10 @@ import { DUMMY_IMAGE } from '@/contants'
 interface Props {
   id: string;
   title: string;
-  single_play_cost: number;
-  source: string | null;
-  thumbnail: any | null;
+  single_play_cost: string;
+  source_url?: string | null;
+  thumbnail?: string | null;
+  consumeToken: boolean;
 }
 
 const Wrapper = styled(Box)`
@@ -20,6 +18,8 @@ const Wrapper = styled(Box)`
 
 const NeedPayBlock = styled(Box)`
   position: relative;
+  border-radius: 8px;
+  overflow: hidden;
 
   .float-layer {
     position: absolute;
@@ -33,34 +33,34 @@ const NeedPayBlock = styled(Box)`
   }
 `
 
-export default (props: Props) => {
-  const { id, title, single_play_cost, thumbnail, source } = props
-  const { width } = useWindowSize()
+const Player = ({ id, title, single_play_cost, thumbnail, source_url, consumeToken }: Props) => {
+  console.log("TODO consumeToken: ", consumeToken)
 
   return (
     <Wrapper>
-      <Head>
-        <title>{title}</title>
-      </Head>
+      <h3>{title}</h3>
       {
         // Note:
         // We always have video source in DB,
         // but If there's no source passed in,
         // then treat like unpaid ones.
-        source ? (
-          // @ts-ignore
+        source_url ? (
           <Video autoPlay={false} controls={"below"}>
-            <source key="video" src={source} type="video/mp4" />
+            <source key="video" src={source_url} type="video/mp4" />
           </Video>
         ) : (
-          <NeedPayBlock style={{ height: width }}>
-            <Image fit="contain" src={thumbnail ? thumbnail.src : DUMMY_IMAGE} />
+          <NeedPayBlock>
+            <Image fit="contain" src={thumbnail ? thumbnail : DUMMY_IMAGE} />
             <div className="float-layer">
               <Lock size="xlarge" color="white" />
-              <GoPurchaseButton
-                videoId={id}
-                amount={single_play_cost}
-              />
+              {
+                single_play_cost && single_play_cost.length ? (
+                  <GoPurchaseButton
+                    videoId={id}
+                    single_play_cost={single_play_cost}
+                  />
+                ) : null
+              }
             </div>
           </NeedPayBlock>
         )
@@ -68,3 +68,5 @@ export default (props: Props) => {
     </Wrapper>
   )
 }
+
+export default Player

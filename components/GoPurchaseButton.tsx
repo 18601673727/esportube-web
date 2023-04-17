@@ -1,14 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import { NextPage } from 'next'
-import Router from 'next/navigation'
+import Link from 'next/link'
 
-interface Props {
+type Props = {
   videoId: string;
-  amount: number;
+  single_play_cost: string;
 }
 
-const Wrapper = styled.button`
+const Wrapper = styled.div`
   outline: none;
   user-select: none;
   cursor: pointer;
@@ -19,31 +18,27 @@ const Wrapper = styled.button`
   border: none;
   border-radius: 0;
   width: 100%;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 800;
+  text-align: center;
   background: rgba(222, 222, 222, .2);
-
+  
   :hover {
     background: rgba(222, 222, 222, .4);
   }
+  
+  a {
+    color: #fff;    
+    font-size: 16px;
+    font-weight: 800;
+    text-decoration: none;  
+  }
 `
 
-const GoPurchaseButton: NextPage<Props> = props => {
-  const { videoId, amount } = props
-
-  return (
-    <Wrapper onClick={(event: React.MouseEvent<HTMLElement>) => {
-      event.stopPropagation()
-
-      Router.push({
-        pathname: '/purchase',
-        query: { videoId },
-      })
-    }}>
-      观看本视频需支付{amount}元
-    </Wrapper>
-  )
-}
+const GoPurchaseButton = ({ videoId, single_play_cost }: Props) => (
+  <Wrapper>
+    <Link href={`/purchase?videoId=${videoId}`}>
+      观看本视频需支付{single_play_cost}元
+    </Link>
+  </Wrapper>
+)
 
 export default GoPurchaseButton

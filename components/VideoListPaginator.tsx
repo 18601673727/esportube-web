@@ -33,9 +33,8 @@ const Wrapper = styled(Box)`
   margin-top: 7px;
 `;
 
-export default (props: Props) => {
+const VideoListPaginator = ({ total, page, perPage, categoryId }: Props) => {
   const router = useRouter()
-  const { total, page, perPage, categoryId } = props
 
   return (
     <Wrapper background="white">
@@ -45,7 +44,7 @@ export default (props: Props) => {
             <Button
               plain
               label="上一页"
-              onClick={() => router.push(categoryId ? `?categoryId=${categoryId}&page=${page - 1}` : `?page=${page - 1}`)}
+              onClick={() => router.push(categoryId ? `/?categoryId=${categoryId}&page=${page - 1}` : `/?page=${page - 1}`)}
             />
           ) : null
         }
@@ -54,7 +53,7 @@ export default (props: Props) => {
             <Button
               plain
               label="下一页"
-              onClick={() => router.push(categoryId ? `?categoryId=${categoryId}&page=${page + 1}` : `?page=${page + 1}`)}
+              onClick={() => router.push(categoryId ? `/?categoryId=${categoryId}&page=${page + 1}` : `/?page=${page + 1}`)}
             />
           ) : null
         }
@@ -62,3 +61,5 @@ export default (props: Props) => {
     </Wrapper>
   )
 }
+
+export default VideoListPaginator
